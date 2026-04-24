@@ -2,6 +2,60 @@
 
 use Illuminate\Support\Facades\Route;
 
+//Page Login
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
+});
+
+Route::post('login', function () {
+    return 1;
+})->name('login');
+
+//Page Dashboard
+Route::get('/dashboard', function () {
+    return view('auth.dashboard');
+})->name('dashboard');
+
+//Pages Departements
+Route::prefix('departements')->group(function () {
+    Route::get('/', function () {
+        return view('auth.departments.show');
+    })->name('departments.show');
+
+    Route::get('/create', function () {
+        return view('auth.departments.create');
+    })->name('departments.create');
+
+    Route::get('/details/{id}', function ($id) {
+         return view('auth.departments.detail');
+    })->name('departments.detail');
+
+    Route::get('/update/{id}', function ($id) {
+        return view('auth.departments.update');
+    })->name('departments.update');
+
+    Route::get('/delete/{id}', function ($id) {
+        return 1;
+    })->name('departments.delete');
+});
+
+
+//Pages Finances
+Route::prefix('finances')->group(function () {
+    Route::get('/', function () {
+        return view('auth.finances.show');
+    })->name('finances.show');
+
+    Route::get('/create', function () {
+        return view('auth.finances.create');
+    })->name('finances.create');
+
+
+    Route::get('/update/{id}', function ($id) {
+        return view('auth.finances.update');
+    })->name('finances.update');
+
+    Route::get('/delete/{id}', function ($id) {
+        return 1;
+    })->name('finances.delete');
 });
