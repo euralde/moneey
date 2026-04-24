@@ -13,7 +13,7 @@
             <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-xs border">
                 {{ auth()->user()->initials ?? 'JS' }}
             </div>
-            <span class="font-medium text-gray-700 hidden sm:block">{{ auth()->user()->name ?? 'Junior SANNI' }}</span>
+            <span class="font-medium text-gray-700 hidden sm:block">{{ auth()->user()->lastname ." ". auth()->user()->firstname?? 'Non defini' }}</span>
         </div>
     </div>
 </header>
