@@ -1,15 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
-//Page Login
+// Page login
 Route::get('/', function () {
     return view('login');
 });
 
-Route::post('login', function () {
-    return 1;
-})->name('login');
+// Traitement login
+Route::post('login', [UserController::class, 'login'])->name('login');
+
+// Logout
+Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
 //Page Dashboard
 Route::get('/dashboard', function () {
@@ -27,7 +30,7 @@ Route::prefix('departements')->group(function () {
     })->name('departments.create');
 
     Route::get('/details/{id}', function ($id) {
-         return view('auth.departments.detail');
+        return view('auth.departments.detail');
     })->name('departments.detail');
 
     Route::get('/update/{id}', function ($id) {

@@ -34,9 +34,10 @@
         </a>
     </nav>
     <div class="p-4 border-t border-slate-800">
-        <a href="#" class="flex items-center px-2 py-2 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
             <iconify-icon icon="solar:logout-2-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Déconnexion</span>
-        </a>
+            <button type="submit" class="flex items-center px-2 py-2 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400">Se déconnecter</button>
+        </form>
     </div>
 </aside>
