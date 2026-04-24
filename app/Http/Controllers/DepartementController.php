@@ -7,59 +7,46 @@ use Illuminate\Http\Request;
 
 class DepartementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $departements = Departement::all();
+        return view('departements.show', compact('departements'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('departements.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        Departement::create($request->all());
+        return redirect()->route('departements.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Departement $departement)
+    public function edit($id)
     {
-        //
+        $departement = Departement::findOrFail($id);
+        return view('departements.update', compact('departement'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Departement $departement)
+    public function update(Request $request, $id)
     {
-        //
+        $departement = Departement::findOrFail($id);
+        $departement->update($request->all());
+        return redirect()->route('departements.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Departement $departement)
+    public function destroy($id)
     {
-        //
+        $departement = Departement::findOrFail($id);
+        $departement->delete();
+        return redirect()->route('departements.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Departement $departement)
+    public function show($id)
     {
-        //
+        $departement = Departement::findOrFail($id);
+        return view('departements.detail', compact('departement'));
     }
 }
