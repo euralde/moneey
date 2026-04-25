@@ -28,9 +28,9 @@
             <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
             <span>Collaboration</span>
         </a>
-<<<<<<< HEAD
 
-        <a href="{{ route('users') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
+
+        <a href="{{ route('users.index') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
             <span>Utilisateur</span>
 
@@ -42,21 +42,6 @@
             <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>
             <span>Notes</span>
         </a>
-=======
-        <a href="{{ route('users') }}"
-            class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-            <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Utilisateur</span>
-            <a href="/departements"
-                class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-                <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
-                <span>Départements</span>
-            </a>
-            <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-                <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>
-                <span>Notes</span>
-            </a>
->>>>>>> 98b626781035dad868eeabc0176e2fbc2846024a
     </nav>
     <div class="p-4 border-t border-slate-800">
         <form method="POST" action="{{ route('logout') }}">

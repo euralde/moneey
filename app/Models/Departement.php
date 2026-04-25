@@ -14,4 +14,10 @@ class Departement extends Model
         'description',
         'status'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'departusers')
+        ->withTimestamps();
+    }
 }

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Departement;
+
 
 class UserController extends Controller
 {
@@ -57,8 +60,15 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+        $users = User::with('departements')->get();
+
         //récupère les utilisateurs
         return view('auth.utilisateurs.users', compact('users'));
+    }
+
+    public function creatusers()
+    {
+        return view('auth.utilisateurs.create_users');
     }
 
     //insertion des utilisateurs dans la base de données
@@ -80,14 +90,18 @@ class UserController extends Controller
             'profil' => $request->profil
         ]);
 
-        return redirect()->back()->with('success', 'Utilisateur ajouté');
+        Alert::success('Utilisateur ajouté avec succès');
+        return redirect()->route('users.index');
     }
 
     // ✏️ afficher formulaire
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        return view('auth.utilisateurs.edit_users', compact('user'));
+        $user = User::find($id);
+        if ($user === null) {
+            abort(404);
+        }
+        return view('auth.utilisateurs.edit_users', ['user' => $user]);
     }
 
     // ✏️ modifier
@@ -114,8 +128,20 @@ class UserController extends Controller
     // 🗑️ supprimer
     public function destroy($id)
     {
-        User::findOrFail($id)->delete();
+        $user = User::find($id);
 
-        return redirect()->route('users')->with('success', 'Utilisateur supprimé');
+        $user->delete();
+        Alert::success('Utilisateurs supprimé avec succès');
+        return redirect()->route('users.index');
+    }
+
+    public function attribuer($id)
+    {
+        $user = User::find($id);
+        $departements = Departement::all();
+        if ($user === null) {
+            abort(404);
+        }
+        return view('auth.affectations.attribuer', ['user' => $user,'departements' => $departements]);
     }
 }

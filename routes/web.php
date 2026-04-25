@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DepartementController;
+use App\Http\Controllers\AffectationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,17 +17,16 @@ Route::post('login', [UserController::class, 'login'])->name('login');
 // Logout
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 98b626781035dad868eeabc0176e2fbc2846024a
 //Page utilisateur
 Route::get('/users', function () {
     return view('auth.utilisateurs.users');
 })->name('users');
 
 //affichage des utilisateurs
-Route::get('/users', [UserController::class, 'index'])->name('users');
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
+Route::get('/creatusers', [UserController::class, 'creatusers'])->name('users.creatusers');
 
 //register
 Route::post('/register', [UserController::class, 'store'])->name('register');
@@ -35,13 +35,17 @@ Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edi
 
 Route::post('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
 
-Route::post('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
+Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
+
+Route::get('/users/attribuer/{id}', [UserController::class, 'attribuer'])->name('users.attribuer');
+
+//affectations
+Route::post('/affectations', [AffectationController::class, 'store'])->name('affectations.store');
+
+Route::get('/affectation/{id}', [AffectationController::class, 'create'])->name('affectations.create');
+
 
 //Page Dashboard
-<<<<<<< HEAD
-
-=======
->>>>>>> 98b626781035dad868eeabc0176e2fbc2846024a
 
 // DASHBOARD
 Route::get('/dashboard', function () {

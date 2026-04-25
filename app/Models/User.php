@@ -48,4 +48,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function departements()
+    {
+        return $this->belongsToMany(Departement::class, 'departusers')
+        ->withTimestamps();
+    }
 }
