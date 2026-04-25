@@ -16,7 +16,6 @@ Route::post('login', [UserController::class, 'login'])->name('login');
 // Logout
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
-<<<<<<< HEAD
 //Page utilisateur
 Route::get('/users', function () {
     return view('auth.utilisateurs.users');
@@ -35,10 +34,9 @@ Route::post('/users/update/{id}', [UserController::class, 'update'])->name('user
 Route::post('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
 
 //Page Dashboard
-=======
+
 
 // DASHBOARD
->>>>>>> 783f9d8731a60689c938e51003d64c02926fd9a1
 Route::get('/dashboard', function () {
 return view('auth.dashboard');
 })->name('dashboard');
