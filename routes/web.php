@@ -4,6 +4,7 @@ use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\TacheController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\FinanceController;
 use Illuminate\Support\Facades\Route;
 
 // PAGE LOGIN
@@ -78,22 +79,13 @@ Route::prefix('messages')->group(function () {
 
 // FINANCES
 Route::prefix('finances')->group(function () {
-
-    Route::get('/', function () {
-        return view('auth.finances.show');
-    })->name('finances.show');
-
-    Route::get('/create', function () {
-        return view('auth.finances.create');
-    })->name('finances.create');
-
-    Route::get('/update/{id}', function ($id) {
-        return view('auth.finances.update');
-    })->name('finances.update');
-
-    Route::get('/delete/{id}', function ($id) {
-        return 1;
-    })->name('finances.delete');
+    Route::get('/', [FinanceController::class, 'index'])->name('finances.index');
+    Route::get('/create', [FinanceController::class, 'create'])->name('finances.create');
+    Route::post('/store', [FinanceController::class, 'store'])->name('finances.store');
+    Route::get('/show/{id}', [FinanceController::class, 'show'])->name('finances.show');
+    Route::get('/edit/{id}', [FinanceController::class, 'edit'])->name('finances.edit');
+    Route::post('/update/{id}', [FinanceController::class, 'update'])->name('finances.update');
+    Route::delete('/delete/{id}', [FinanceController::class, 'destroy'])->name('finances.destroy');
 });
 
 // ROUTES AJAX POUR LE CHAT MESSAGES

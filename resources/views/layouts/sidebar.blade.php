@@ -23,6 +23,11 @@
             <span>Messages</span>
         </a>
 
+        <a href="{{ route('finances.index') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
+            <iconify-icon icon="solar:wallet-money-linear" class="text-lg mr-3"></iconify-icon>
+            <span>Finances</span>
+        </a>
+
         <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:users-group-rounded-linear" class="text-lg mr-3"></iconify-icon>
             <span>RH</span>
