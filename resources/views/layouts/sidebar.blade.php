@@ -12,62 +12,50 @@
                 class="text-lg mr-3 {{ request()->routeIs('dashboard') ? 'text-blue-400' : '' }}"></iconify-icon>
             <span class="font-medium">Dashboard</span>
         </a>
-        <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-            <iconify-icon icon="solar:pie-chart-2-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Finance</span>
-        </a>
-        <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
+
+        <a href="{{ route('taches.index') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:calendar-mark-linear" class="text-lg mr-3"></iconify-icon>
             <span>Tâches</span>
         </a>
+
+        <a href="{{ route('messages.index') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
+            <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
+            <span>Messages</span>
+        </a>
+
         <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:users-group-rounded-linear" class="text-lg mr-3"></iconify-icon>
             <span>RH</span>
         </a>
+
         <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
             <span>Collaboration</span>
         </a>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 
         <a href="{{ route('users') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
             <span>Utilisateur</span>
+        </a>
 
->>>>>>> a1121a1b8bf15094920d9f2f50d0f10ae0acc9fc
         <a href="/departements" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
             <span>Départements</span>
         </a>
+
         <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>
             <span>Notes</span>
         </a>
-=======
-        <a href="{{ route('users') }}"
-            class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-            <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Utilisateur</span>
-            <a href="/departements"
-                class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-                <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
-                <span>Départements</span>
-            </a>
-            <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
-                <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>
-                <span>Notes</span>
-            </a>
->>>>>>> 98b626781035dad868eeabc0176e2fbc2846024a
     </nav>
+
     <div class="p-4 border-t border-slate-800">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <iconify-icon icon="solar:logout-2-linear" class="text-lg mr-3"></iconify-icon>
-            <button type="submit"
-                class="flex items-center px-2 py-2 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400">Se
-                déconnecter</button>
+            <button type="submit" class="flex items-center px-2 py-2 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400">
+                <iconify-icon icon="solar:logout-2-linear" class="text-lg mr-3"></iconify-icon>
+                Se déconnecter
+            </button>
         </form>
     </div>
 </aside>
