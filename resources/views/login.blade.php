@@ -135,7 +135,7 @@
                             <input type="email" name="email" id="email" value="{{ old('email') }}"
                                 placeholder="contact@afroplume.com"
                                 class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all @error('email') border-red-500 @enderror"
-                                required autofocus>
+                                autofocus>
                         </div>
                         @error('email')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -150,7 +150,7 @@
                             </div>
                             <input type="password" name="password" id="password" placeholder="••••••••"
                                 class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all @error('password') border-red-500 @enderror"
-                                required>
+                                >
                             <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                 <iconify-icon icon="solar:eye-linear" class="text-gray-400 text-lg hover:text-gray-600 transition"></iconify-icon>
                             </button>

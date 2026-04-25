@@ -14,6 +14,23 @@ Route::post('login', [UserController::class, 'login'])->name('login');
 // Logout
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
+//Page utilisateur
+Route::get('/users', function () {
+    return view('auth.utilisateurs.users');
+})->name('users');
+
+//affichage des utilisateurs
+Route::get('/users', [UserController::class, 'index'])->name('users');
+
+//register
+Route::post('/register', [UserController::class,'store'])->name('register');
+
+Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+
+Route::post('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
+
+Route::post('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
+
 //Page Dashboard
 Route::get('/dashboard', function () {
     return view('auth.dashboard');
