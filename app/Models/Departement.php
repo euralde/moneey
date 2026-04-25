@@ -1,4 +1,4 @@
- <?php
+<?php
 
 namespace App\Models;
 
@@ -9,5 +9,9 @@ class Departement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = [
+        'title', 
+        'description',
+        'status'
+    ];
 }

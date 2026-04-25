@@ -5,8 +5,7 @@
     <h1>Modifier le département</h1>
     <form method="POST" action="{{ route('departements.update', $departement->id) }}">
         @csrf
-        <input type="hidden" name="_method" value="PUT">
-
+        @method('PUT')
         <div class="mb-3">
             <label>Titre</label>
             <input type="text" name="title" value="{{ $departement->title }}" class="form-control" required>

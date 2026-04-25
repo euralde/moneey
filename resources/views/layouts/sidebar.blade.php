@@ -24,9 +24,9 @@
             <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
             <span>Collaboration</span>
         </a>
-        <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
+        <a href="/departements" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Services</span>
+            <span>Départements</span>
         </a>
         <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>
