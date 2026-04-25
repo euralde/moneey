@@ -24,9 +24,15 @@
             <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
             <span>Collaboration</span>
         </a>
+<<<<<<< HEAD
         <a href="{{ route('users') }}" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
             <span>Utilisateur</span>
+=======
+        <a href="/departements" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
+            <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
+            <span>Départements</span>
+>>>>>>> 783f9d8731a60689c938e51003d64c02926fd9a1
         </a>
         <a href="#" class="flex items-center px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300">
             <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>

@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
-// Page login
+// PAGE LOGIN
 Route::get('/', function () {
-    return view('login');
+return view('login');
 });
+
 
 // Traitement login
 Route::post('login', [UserController::class, 'login'])->name('login');
@@ -14,6 +16,7 @@ Route::post('login', [UserController::class, 'login'])->name('login');
 // Logout
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
+<<<<<<< HEAD
 //Page utilisateur
 Route::get('/users', function () {
     return view('auth.utilisateurs.users');
@@ -32,50 +35,41 @@ Route::post('/users/update/{id}', [UserController::class, 'update'])->name('user
 Route::post('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
 
 //Page Dashboard
+=======
+
+// DASHBOARD
+>>>>>>> 783f9d8731a60689c938e51003d64c02926fd9a1
 Route::get('/dashboard', function () {
-    return view('auth.dashboard');
+return view('auth.dashboard');
 })->name('dashboard');
 
-//Pages Departements
+// DEPARTEMENTS
 Route::prefix('departements')->group(function () {
-    Route::get('/', function () {
-        return view('auth.departments.show');
-    })->name('departments.show');
-
-    Route::get('/create', function () {
-        return view('auth.departments.create');
-    })->name('departments.create');
-
-    Route::get('/details/{id}', function ($id) {
-        return view('auth.departments.detail');
-    })->name('departments.detail');
-
-    Route::get('/update/{id}', function ($id) {
-        return view('auth.departments.update');
-    })->name('departments.update');
-
-    Route::get('/delete/{id}', function ($id) {
-        return 1;
-    })->name('departments.delete');
+Route::get('/', [DepartementController::class, 'index'])->name('departements.index');
+Route::get('/create', [DepartementController::class, 'create'])->name('!!!!');
+Route::post('/store', [DepartementController::class, 'store'])->name('departements.store');
+Route::get('/edit/{id}', [DepartementController::class, 'edit'])->name('departements.edit');
+Route::post('/update/{id}', [DepartementController::class, 'update'])->name('departements.update');
+Route::delete('/delete/{id}', [DepartementController::class, 'destroy'])->name('departements.destroy');
+Route::get('/show/{id}', [DepartementController::class, 'show'])->name('departements.show');
 });
 
-
-//Pages Finances
+// FINANCES
 Route::prefix('finances')->group(function () {
-    Route::get('/', function () {
-        return view('auth.finances.show');
-    })->name('finances.show');
 
-    Route::get('/create', function () {
-        return view('auth.finances.create');
-    })->name('finances.create');
+Route::get('/', function () {
+    return view('auth.finances.show');
+})->name('finances.show');
 
+Route::get('/create', function () {
+    return view('auth.finances.create');
+})->name('finances.create');
 
-    Route::get('/update/{id}', function ($id) {
-        return view('auth.finances.update');
-    })->name('finances.update');
+Route::get('/update/{id}', function ($id) {
+    return view('auth.finances.update');
+})->name('finances.update');
 
-    Route::get('/delete/{id}', function ($id) {
-        return 1;
-    })->name('finances.delete');
+Route::get('/delete/{id}', function ($id) {
+    return 1;
+})->name('finances.delete');
 });
