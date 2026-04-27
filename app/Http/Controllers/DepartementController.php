@@ -37,12 +37,12 @@ class DepartementController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|unique:departements|max:255',
+            'name' => 'required|unique:departements|max:255',
             'description' => 'nullable',
             'status' => 'required|in:actif,inactif',
         ], [
-            'title.required' => 'Titre est requis',
-            'title.unique' => 'Titre doit etre unique',
+            'name.required' => 'Nom est requis',
+            'name.unique' => 'Nom doit etre unique',
             'status.required' => 'Statut est requis',
             'status.in' => 'Statut doit etre actif ou inactif',
         ]);

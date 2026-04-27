@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use App\Models\Departement;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
@@ -12,7 +16,24 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return view('auth.employes.index');
+        $employees = Employee::with(['user', 'departement'])->get();
+        $departements = Departement::all();
+
+        // Statistiques
+        $totalEmployes = Employee::count();
+        $totalActifs = Employee::where('status', 'actif')->count();
+        $totalConge = Employee::where('status', 'conge')->count();
+        $totalTeletravail = Employee::where('status', 'teletravail')->count();
+        $totalDepartements = Departement::count();
+
+        return view('auth.employes.index', compact('employees', 
+            'departements', 
+            'totalEmployes', 
+            'totalActifs', 
+            'totalConge', 
+            'totalTeletravail', 
+            'totalDepartements'));
+
     }
 
     /**
@@ -28,7 +49,38 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        /*$request->validate([
+            'lastname' => 'required',
+            'firstname' => 'required',
+            'email' => 'required|email|unique:users',
+            'departement_id' => 'required'
+        ]);*/
+
+        DB::beginTransaction();
+
+            // 1️⃣ USER
+            $user = User::create([
+                'lastname' => $request->lastname,
+                'firstname' => $request->firstname,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => $request->email, // temporaire
+            ]);
+
+            // 2️⃣ EMPLOYEE (LIÉ AU USER 🔥)
+            Employee::create([
+                'user_id' => $user->id,
+                'department_id' => $request->department_id,
+                'status' => $request->status,
+                'hire_date' => $request->hire_date,
+                'poste' => $request->poste,
+                'skills' => $request->skills,
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Employé ajouté');
     }
 
     /**
@@ -42,24 +94,56 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employee $employee)
-    {
-        //
+
+    // Dans EmployeeController.php
+
+    public function update(Request $request, Employee $employee, $id)
+    { 
+        /*$request->validate([
+            'lastname' => 'required',
+            'firstname' => 'required',
+            'email' => 'required|email|unique:users,email,' . $employee->user_id,
+            'department_id' => 'required'
+        ]);*/
+
+        $employee = Employee::findOrFail($id);
+        DB::beginTransaction();
+
+        
+            // Mettre à jour l'utilisateur
+            $employee->user->update([
+                'lastname' => $request->lastname,
+                'firstname' => $request->firstname,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => $request->email, // temporaire
+            ]);
+
+            // Mettre à jour l'employé
+            $employee->update([
+                'department_id' => $request->department_id,
+                'status' => $request->status,
+                'poste' => $request->poste,
+                'skills' => $request->skills,
+            ]);
+
+        DB::commit();
+
+            return redirect()->route('employes.index')->with('success', 'Employé modifié avec succès');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Employee $employee)
+    public function destroy(Employee $employee, $id)
     {
-        //
-    }
+            $employee = Employee::findOrFail($id);
+            $user = $employee->user;
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Employee $employee)
-    {
-        //
+            $employee->delete();
+
+            if ($user) {
+                $user->delete();
+            }
+
+            
+            return redirect()->route('employes.index')->with('success', 'Employé supprimé avec succès');
     }
 }

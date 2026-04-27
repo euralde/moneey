@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->enum('status', ['actif', 'conge', 'teletravail', 'inactif'])->default('actif');
             $table->date('hire_date')->nullable();
             $table->string('avatar_url')->nullable();
+            $table->string('poste')->nullable();
             $table->text('skills')->nullable();
             $table->timestamps();
         });
