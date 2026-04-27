@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,9 +15,10 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('firstname');
             $table->string('email')->unique();
+            $table->string('phone')->unique();
             $table->string('password');
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->enum('profil', ['gerant', 'manager','employee', 'ambassadeur'])->default('employee');
+            $table->enum('profil', ['gerant', 'manager', 'employee', 'ambassadeur'])->default('employee');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -44,7 +44,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['departement_id']);
+            $table->dropColumn(['departement_id', 'status', 'profil']);
+        });
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }

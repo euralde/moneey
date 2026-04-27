@@ -9,15 +9,21 @@ class Departement extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title', 
-        'description',
-        'status'
-    ];
+    protected $fillable = ['name', 'description', 'manager_id'];
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'departusers')
-        ->withTimestamps();
+        return $this->hasMany(User::class);
     }
+
+    public function recrutements()
+    {
+        return $this->hasMany(Recrutement::class);
+    }
+
 }

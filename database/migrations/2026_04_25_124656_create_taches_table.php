@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departusers', function (Blueprint $table) {
+        Schema::create('taches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('departement_id');
-
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('departement_id')->references('id')->on('departements');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('status')->default('actif');
             $table->timestamps();
-
         });
     }
 
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departusers');
+        Schema::dropIfExists('taches');
     }
 };
