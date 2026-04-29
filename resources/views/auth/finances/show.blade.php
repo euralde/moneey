@@ -10,12 +10,12 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm text-gray-500">Titre</label>
-                <p class="font-medium">{{ $finance->titre }}</p>
+                <p class="font-medium">{{ $transaction->label }}</p>
             </div>
             <div>
                 <label class="block text-sm text-gray-500">Type</label>
                 <p class="font-medium">
-                    @if($finance->type == 'entree')
+                    @if($transaction->type == 'entree')
                         <span class="text-green-600">💰 Entrée</span>
                     @else
                         <span class="text-red-600">💸 Sortie</span>
@@ -23,30 +23,30 @@
                 </p>
             </div>
             <div>
-                <label class="block text-sm text-gray-500">Catégorie</label>
-                <p class="font-medium">{{ $finance->categorie }}</p>
+                <label class="block text-sm text-gray-500">Départements</label>
+                <p class="font-medium">{{ $transaction->departement->name }}</p>
             </div>
             <div>
                 <label class="block text-sm text-gray-500">Montant</label>
-                <p class="font-medium">{{ number_format($finance->montant, 0, ',', ' ') }} FCFA</p>
+                <p class="font-medium">{{ number_format($transaction->montant, 0, ',', ' ') }} FCFA</p>
             </div>
             <div>
                 <label class="block text-sm text-gray-500">Date</label>
-                <p class="font-medium">{{ \Carbon\Carbon::parse($finance->date)->format('d/m/Y') }}</p>
+                <p class="font-medium">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</p>
             </div>
             <div>
                 <label class="block text-sm text-gray-500">Statut</label>
-                <p class="font-medium">{{ $finance->statut }}</p>
+                <p class="font-medium">{{ $transaction->statut ?? 'valide' }}</p>
             </div>
             <div class="col-span-2">
                 <label class="block text-sm text-gray-500">Description</label>
-                <p>{{ $finance->description ?? 'Aucune description' }}</p>
+                <p>{{ $transaction->description ?? 'Aucune description' }}</p>
             </div>
         </div>
 
         <div class="mt-6 flex gap-3">
-            <a href="{{ route('finances.edit', $finance->id) }}" class="px-4 py-2 bg-yellow-600 text-white rounded-lg">Modifier</a>
-            <a href="{{ route('finances.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-lg">Retour</a>
+            <a href="{{ route('transactions.edit', $transaction->id) }}" class="px-4 py-2 bg-yellow-600 text-white rounded-lg">Modifier</a>
+            <a href="{{ route('transactions.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-lg">Retour</a>
         </div>
     </div>
 </div>

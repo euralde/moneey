@@ -23,7 +23,7 @@
                 <table class="w-full text-left">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            <th class="px-6 py-4">Titre</th>
+                            <th class="px-6 py-4">Nom</th>
                             <th class="px-6 py-4">Description</th>
                             <th class="px-6 py-4">Statut</th>
                             <th class="px-6 py-4 text-center">Actions</th>
@@ -32,7 +32,7 @@
                     <tbody class="divide-y divide-gray-100 text-sm">
                         @foreach($departements as $departement)
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 font-medium text-gray-900">{{ $departement->title }}</td>
+                                <td class="px-6 py-4 font-medium text-gray-900">{{ $departement->name }}</td>
                                 <td class="px-6 py-4 text-gray-500 max-w-xs truncate">{{ $departement->description }}</td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">

@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->enum('type', ['entree', 'sortie']);
             $table->string('label');
             $table->decimal('montant', 15, 0);
-            $table->date('date');
+            $table->date('date'); 
             $table->text('description')->nullable();
             $table->timestamps();
         });
