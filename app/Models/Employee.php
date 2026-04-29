@@ -10,15 +10,12 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
-        'firstname',
-        'lastname',
-        'email',
-        'phone',
-        'position',
-        'department',
+        'user_id',
+        'department_id',
         'status',
         'hire_date',
         'avatar_url',
+        'poste',
         'skills'
     ];
 
@@ -26,14 +23,13 @@ class Employee extends Model
         'hire_date' => 'date',
     ];
 
-    public function getFullNameAttribute()
+    public function user()
     {
-        return "{$this->firstname} {$this->lastname}";
+        return $this->belongsTo(User::class);
     }
 
     public function departement()
     {
-        return $this->belongsTo(Departement::class);
-
+        return $this->belongsTo(Departement::class, 'department_id');
     }
 }

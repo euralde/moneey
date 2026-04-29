@@ -28,9 +28,9 @@ class User extends Authenticatable
     ];
 
     // Relations
-    public function departement()
+    public function employee()
     {
-        return $this->belongsTo(Departement::class);
+        return $this->hasOne(Employee::class);
     }
 
     public function managedDepartement()

@@ -24,7 +24,7 @@
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             <th class="px-6 py-4">Nom</th>
-                            <th class="px-6 py-4">Description</th>
+            <th class="px-6 py-4">Description</th>
                             <th class="px-6 py-4">Statut</th>
                             <th class="px-6 py-4 text-center">Actions</th>
                         </tr>
