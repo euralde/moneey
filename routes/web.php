@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\LeadController;
-use App\Http\Controllers\TacheController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\TransactionController;
@@ -41,20 +40,14 @@ Route::prefix('transactions')->group(function () {
 });
 
 /*
-FEATURES :  TÂCHES
+FEATURES :  TÂCHES (CRUD classique + Calendrier)
 */
-Route::prefix('tasks')->group(function () {
+Route::prefix('tasks')->middleware('auth')->group(function () {
     Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
-    Route::get('/all', [TaskController::class, 'all'])->name('tasks.all');
-    Route::get('/overdue', [TaskController::class, 'overdue'])->name('tasks.overdue');
-    Route::get('/completed', [TaskController::class, 'completed'])->name('tasks.completed');
-    Route::get('/pending', [TaskController::class, 'pending'])->name('tasks.pending');
     Route::get('/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/store', [TaskController::class, 'store'])->name('tasks.store');
-    Route::get('/show/{id}', [TaskController::class, 'show'])->name('tasks.show');
     Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('tasks.edit');
-    Route::patch('/update/status/{id}', [TaskController::class, 'status'])->name('tasks.status');
-    Route::patch('/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::put('/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/delete/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
@@ -175,19 +168,6 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 /*
-FEATURES : TÂCHES (version française)
-*/
-Route::prefix('taches')->group(function () {
-    Route::get('/', [TacheController::class, 'index'])->name('taches.index');
-    Route::get('/create', [TacheController::class, 'create'])->name('taches.create');
-    Route::post('/store', [TacheController::class, 'store'])->name('taches.store');
-    Route::get('/edit/{id}', [TacheController::class, 'edit'])->name('taches.edit');
-    Route::post('/update/{id}', [TacheController::class, 'update'])->name('taches.update');
-    Route::delete('/delete/{id}', [TacheController::class, 'destroy'])->name('taches.destroy');
-    Route::get('/show/{id}', [TacheController::class, 'show'])->name('taches.show');
-});
-
-/*
 FEATURES : FINANCES
 */
 Route::prefix('finances')->group(function () {
@@ -205,12 +185,12 @@ Route::prefix('finances')->group(function () {
  * CHAT AVEC BASE DE DONNÉES
  * ======================================================
  */
-Route::get('/conversations', [App\Http\Controllers\ConversationController::class, 'index'])->name('conversations.index');
+Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/chat', [App\Http\Controllers\ConversationController::class, 'index'])->name('chat.index');
-    Route::get('/conversations/{id}', [App\Http\Controllers\ConversationController::class, 'show'])->name('conversations.show');
-    Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
+    Route::get('/chat', [ConversationController::class, 'index'])->name('chat.index');
+    Route::get('/conversations/{id}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::post('/messages/send', [MessageController::class, 'send'])->name('messages.send');
 });
 
 Route::get('/conversations/check/{id}', function ($id) {
@@ -230,3 +210,6 @@ Route::post('/conversations', function (Request $request) {
     ]);
     return response()->json($conv);
 })->name('conversations.store');
+
+// ROUTE POUR LE COMPTEUR DE MESSAGES NON LUS
+Route::get('/api/messages/unread-count', [ConversationController::class, 'unreadCount'])->name('api.unread.count');

@@ -55,11 +55,6 @@
             <span>Réunions</span>
         </a>
 
-        <!-- <a href="#" class="flex items-center px-6 py-2.5 {{ request()->routeIs('dashboard') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Collaboration</span>
-        </a> -->
-
         <a href="{{ route('tasks.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('tasks.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
             <iconify-icon icon="solar:calendar-mark-linear"
@@ -67,13 +62,14 @@
             <span>Tâches</span>
         </a>
 
-        <a href="{{ route('conversations.index') }}"
-            class="flex items-center px-6 py-2.5 {{ request()->routeIs('conversations.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Messages</span>
+        <!-- LIEN MESSAGES AVEC PASTILLE DE NOTIFICATION -->
+        <a href="{{ route('conversations.index') }}" class="flex items-center justify-between px-6 py-2.5 hover:bg-slate-800 hover:text-white text-slate-300 relative">
+            <div class="flex items-center">
+                <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
+                <span>Messages</span>
+            </div>
+            <span id="unreadMessagesBadge" class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
         </a>
-
-
 
     </nav>
 
@@ -88,3 +84,25 @@
         </form>
     </div>
 </aside>
+
+@push('scripts')
+<script>
+    function fetchUnreadCount() {
+        fetch('/api/messages/unread-count')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('unreadMessagesBadge');
+                if (data.unread > 0) {
+                    badge.innerText = data.unread;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            })
+            .catch(err => console.log('Erreur chargement compteur messages', err));
+    }
+
+    fetchUnreadCount();
+    setInterval(fetchUnreadCount, 10000);
+</script>
+@endpush

@@ -123,6 +123,9 @@
                     container.appendChild(div);
                 });
                 container.scrollTop = container.scrollHeight;
+
+                // 🔁 Mise à jour instantanée du compteur après lecture
+                if (typeof fetchUnreadCount !== 'undefined') fetchUnreadCount();
             });
     }
 

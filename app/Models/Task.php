@@ -9,11 +9,15 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'description', 'priority', 'status', 'start', 'end', 'assignee'];
+    protected $table = 'tasks';
+
+    protected $fillable = [
+        'user_id', 'title', 'description', 'priority', 'due_date', 'is_completed'
+    ];
 
     protected $casts = [
-        'start' => 'date',
-        'end' => 'date',
+        'due_date' => 'date',
+        'is_completed' => 'boolean',
     ];
 
     public function user()
