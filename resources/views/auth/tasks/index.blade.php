@@ -66,11 +66,16 @@
                         <!-- Contenu dynamique -->
                     </div>
                     <div class="flex justify-between gap-3 p-5 border-t bg-gray-50/50 rounded-b-xl">
-                        <button id="deleteTaskBtn"
-                            class="px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition flex items-center gap-2">
-                            <iconify-icon icon="solar:trash-bin-trash-linear" class="text-base"></iconify-icon>
-                            Supprimer
-                        </button>
+                        <form id="deleteForm" method="POST" action="">
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit" onclick="return confirm('Supprimer cette tâche ?')"
+                                class="px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition flex items-center gap-2">
+                                <iconify-icon icon="solar:trash-bin-trash-linear" class="text-base"></iconify-icon>
+                                Supprimer
+                            </button>
+                        </form>
                         <div class="flex gap-3">
                             <button id="closeDetailBtn"
                                 class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Fermer</button>
@@ -90,56 +95,57 @@
                     <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600"><iconify-icon
                             icon="solar:close-circle-linear" class="text-2xl"></iconify-icon></button>
                 </div>
-                <div class="p-5 space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Titre <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" id="taskTitle"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
-                            placeholder="Ex: Finaliser le rapport">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea id="taskDesc" rows="3"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
-                            placeholder="Détails de la tâche..."></textarea>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
+                <form action="{{ route('tasks.store') }}" method="post">
+                    @csrf
+                    <div class="p-5 space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                            <input type="date" id="taskDate" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Titre <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" name="title"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                placeholder="Ex: Finaliser le rapport">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
-                            <select id="taskPriority" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                                <option value="basse">🟢 Basse</option>
-                                <option value="moyenne" selected>🔵 Moyenne</option>
-                                <option value="haute">🟠 Haute</option>
-                                <option value="urgent">🔴 Urgent</option>
-                            </select>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea name="description" rows="3"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
+                                placeholder="Détails de la tâche..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                <input type="date" name="start" id="taskDate" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
+                                <select name="priority" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                                    <option value="basse">🟢 Basse</option>
+                                    <option value="moyenne" selected>🔵 Moyenne</option>
+                                    <option value="haute">🟠 Haute</option>
+                                    <option value="urgent">🔴 Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 p-5 border-t bg-gray-50/50 rounded-b-xl">
+                            <button type="button" id="cancelModalBtn"
+                            class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Enregistrer
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div class="flex justify-end gap-3 p-5 border-t bg-gray-50/50 rounded-b-xl">
-                    <button id="cancelModalBtn"
-                        class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
-                    <button id="saveTaskBtn"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Enregistrer</button>
-                </div>
+                </form>    
             </div>
         </div>
 
         <script>
+            let tasks = @json($tasks);
+        </script>
+        
+        <script>
             // Données des tâches
-            let tasks = JSON.parse(localStorage.getItem('afro_tasks_calendar') || JSON.stringify([
-                { id: 1, title: "Finaliser le bilan Q3", description: "Préparer les chiffres et les présentations pour le comité de direction", date: "2026-04-23", priority: "urgent" },
-                { id: 2, title: "Revue des candidatures", description: "Analyser les CV reçus pour le poste de développeur Full Stack", date: "2026-04-24", priority: "haute" },
-                { id: 3, title: "Mettre à jour les licences", description: "Renouvellement des licences logicielles annuelles", date: "2026-04-25", priority: "moyenne" },
-                { id: 4, title: "Réunion stratégique", description: "Points sur le budget Q2 et validation des objectifs", date: "2026-04-22", priority: "urgent" },
-                { id: 5, title: "Préparation devis client", description: "Devis pour le projet sourcing de véhicules", date: "2026-04-26", priority: "haute" },
-                { id: 6, title: "Test application mobile", description: "Tester la nouvelle version sur iOS et Android", date: "2026-04-27", priority: "moyenne" },
-                { id: 7, title: "Point équipe marketing", description: "Présentation des résultats campagne Q1", date: "2026-04-28", priority: "basse" }
-            ]));
+            
 
             let currentDate = new Date();
 
@@ -150,10 +156,7 @@
                 basse: { label: "Basse", bg: "bg-emerald-500", text: "text-emerald-700", light: "bg-emerald-50" }
             };
 
-            function saveTasks() {
-                localStorage.setItem('afro_tasks_calendar', JSON.stringify(tasks));
-                renderCalendar();
-            }
+            
 
             function renderCalendar() {
                 const year = currentDate.getFullYear();
@@ -185,8 +188,8 @@
                 // Jours du mois actuel
                 for (let i = 1; i <= daysInMonth; i++) {
                     const dateObj = new Date(year, month, i);
-                    const dateStr = dateObj.toISOString().split('T')[0];
-                    const dayTasks = tasks.filter(t => t.date === dateStr);
+                    const dateStr = dateObj.toLocaleDateString('en-CA');
+                    const dayTasks = tasks.filter(t => t.start === dateStr);
                     const isToday = dateObj.toDateString() === today.toDateString();
 
                     calendarDays.push({
@@ -209,47 +212,49 @@
                 grid.innerHTML = calendarDays.map(day => {
                     if (!day.isCurrentMonth) {
                         return `
-                                                                                                <div class="min-h-[120px] bg-gray-50/50 border-b border-r border-gray-100 p-2">
-                                                                                                    <div class="text-right">
-                                                                                                        <span class="text-xs text-gray-400">${day.dayNumber}</span>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            `;
+                        <div class="min-h-[120px] bg-gray-50/50 border-b border-r border-gray-100 p-2">
+                            <div class="text-right">
+                                <span class="text-xs text-gray-400">${day.dayNumber}</span>
+                            </div>
+                        </div>
+                        `;
                     }
 
                     const tasksHtml = day.tasks.map(task => {
                         const priority = priorityConfig[task.priority] || priorityConfig.moyenne;
                         return `
-                                                                                                <div onclick="openTaskDetail(${task.id})" class="cursor-pointer mb-1.5 p-1.5 rounded-lg ${priority.light} hover:shadow-sm transition-all">
-                                                                                                    <div class="flex items-center gap-1.5">
-                                                                                                        <div class="w-2 h-2 rounded-full ${priority.bg}"></div>
-                                                                                                        <span class="text-xs font-medium ${priority.text} truncate flex-1">${escapeHtml(task.title)}</span>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            `;
+                            <div onclick="openTaskDetail(${task.id})" class="cursor-pointer mb-1.5 p-1.5 rounded-lg ${priority.light} hover:shadow-sm transition-all">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-2 h-2 rounded-full ${priority.bg}"></div>
+                                    <span class="text-xs font-medium ${priority.text} truncate flex-1">${escapeHtml(task.title)}</span>
+                                </div>
+                            </div>
+                            `;
                     }).join('');
 
                     const isTodayClass = day.isToday ? 'bg-blue-50' : '';
-
                     return `
-                                                                                            <div class="min-h-[120px] border-b border-r border-gray-100 p-2 ${isTodayClass} hover:bg-gray-50/30 transition">
-                                                                                                <div class="flex justify-between items-start mb-1">
-                                                                                                    <span class="text-sm font-medium ${day.isToday ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs' : 'text-gray-700'}">${day.dayNumber}</span>
-                                                                                                    <button onclick="openTaskModalWithDate('${day.date}')" class="text-gray-300 hover:text-blue-500 transition">
-                                                                                                        <iconify-icon icon="solar:add-circle-linear" class="text-sm"></iconify-icon>
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                                <div class="space-y-1 max-h-[90px] overflow-y-auto">
-                                                                                                    ${tasksHtml}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        `;
+                        <div class="min-h-[120px] border-b border-r border-gray-100 p-2 ${isTodayClass} hover:bg-gray-50/30 transition">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-sm font-medium ${day.isToday ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs' : 'text-gray-700'}">${day.dayNumber}</span>
+                                    <button onclick="openTaskModalWithDate('${day.date}')" class="text-gray-300 hover:text-blue-500 transition">
+                                        <iconify-icon icon="solar:add-circle-linear" class="text-sm"></iconify-icon>
+                                    </button>
+                            </div>
+                            <div class="space-y-1 max-h-[90px] overflow-y-auto">
+                                ${tasksHtml}
+                            </div>
+                        </div>
+                        `;
                 }).join('');
             }
 
             function openTaskDetail(taskId) {
                 const task = tasks.find(t => t.id === taskId);
                 if (!task) return;
+
+                // 🔥 IMPORTANT : définir l'URL du delete
+                document.getElementById('deleteForm').action = `/tasks/${task.id}`;
 
                 const priority = priorityConfig[task.priority] || priorityConfig.moyenne;
                 const dateObj = new Date(task.date);
@@ -283,35 +288,7 @@
 
             function openTaskModalWithDate(date) {
                 document.getElementById('taskDate').value = date;
-                document.getElementById('taskTitle').value = '';
-                document.getElementById('taskDesc').value = '';
-                document.getElementById('taskPriority').value = 'moyenne';
                 openModal();
-            }
-
-            function saveTask() {
-                const title = document.getElementById('taskTitle').value.trim();
-                if (!title) { alert('Veuillez saisir un titre'); return; }
-
-                const description = document.getElementById('taskDesc').value.trim();
-                const date = document.getElementById('taskDate').value;
-                const priority = document.getElementById('taskPriority').value;
-
-                if (!date) { alert('Veuillez sélectionner une date'); return; }
-
-                tasks.push({
-                    id: Date.now(),
-                    title, description, date, priority
-                });
-                saveTasks();
-                closeModal();
-            }
-
-            function deleteTask(taskId) {
-                if (confirm('Supprimer cette tâche ?')) {
-                    tasks = tasks.filter(t => t.id !== taskId);
-                    saveTasks();
-                }
             }
 
             function changeMonth(delta) {
@@ -377,7 +354,6 @@
             document.getElementById('closeModalBtn').addEventListener('click', closeModal);
             document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
             document.getElementById('modalBackdrop').addEventListener('click', closeModal);
-            document.getElementById('saveTaskBtn').addEventListener('click', saveTask);
 
             document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
             document.getElementById('closeDetailBtn').addEventListener('click', closeDetailModal);

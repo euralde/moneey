@@ -83,7 +83,7 @@ class EmployeeController extends Controller
                 'firstname' => $request->firstname,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'password' => $request->email, // temporaire
+                'password' => Hash::make($request->email), // temporaire
             ]);
 
             // 2️⃣ EMPLOYEE (LIÉ AU USER 🔥)

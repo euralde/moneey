@@ -16,7 +16,7 @@
         <div class="flex-1 overflow-y-auto" id="contactsList">
             @foreach($users as $user)
                 <div class="contact-item p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-all"
-                     data-user-id="{{ $user->id }}" data-user-name="{{ $user->name }}">
+                    data-user-id="{{ $user->id }}" data-user-name="{{ $user->name }}">
                     <div class="flex items-center gap-3">
                         <div class="relative">
                             <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center font-medium text-white text-sm">
@@ -27,7 +27,7 @@
                             <div class="flex justify-between items-start w-full">
                                 <h4 class="font-medium text-gray-900 text-sm truncate">{{ $user->name }}</h4>
                                 @if($user->unread_count > 0)
-                                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2">
+                                    <span class="bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2">
                                         {{ $user->unread_count }}
                                     </span>
                                 @endif

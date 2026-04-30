@@ -12,12 +12,12 @@ class Task extends Model
     protected $fillable = ['user_id', 'title', 'description', 'priority', 'status', 'start', 'end', 'assignee'];
 
     protected $casts = [
-        'start' => 'date',
-        'end' => 'date',
+        'start' => 'date:Y-m-d',
+        'end' => 'date:Y-m-d',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

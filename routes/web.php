@@ -56,7 +56,7 @@ Route::prefix('tasks')->group(function () {
     Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::patch('/update/status/{id}', [TaskController::class, 'status'])->name('tasks.status');
     Route::patch('/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::delete('/delete/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
 /*
@@ -158,11 +158,7 @@ Route::prefix('lead')->group(function () {
     Route::post('/store', [LeadController::class, 'store'])->name('lead.store');
     Route::put('/update/{id}', [LeadController::class, 'update'])->name('lead.update');
     Route::patch('/{id}/status', [LeadController::class, 'status'])->name('lead.status');
-<<<<<<< HEAD
     Route::delete('/delete/{id}', [LeadController::class, 'delete'])->name('lead.delete');
-=======
-    Route::delete('/delete/{id}', [LeadController::class, 'destroy'])->name('lead.delete');
->>>>>>> b87434da4436b2788f315df3fab841d7d3e4897f
 });
 
 /*
@@ -186,19 +182,6 @@ FEATURES : Dashboard
 Route::get('/dashboard', function () {
     return view('auth.dashboard');
 })->name('dashboard');
-
-/*
-FEATURES : TÂCHES (version française)
-*/
-Route::prefix('taches')->group(function () {
-    Route::get('/', [TacheController::class, 'index'])->name('taches.index');
-    Route::get('/create', [TacheController::class, 'create'])->name('taches.create');
-    Route::post('/store', [TacheController::class, 'store'])->name('taches.store');
-    Route::get('/edit/{id}', [TacheController::class, 'edit'])->name('taches.edit');
-    Route::post('/update/{id}', [TacheController::class, 'update'])->name('taches.update');
-    Route::delete('/delete/{id}', [TacheController::class, 'destroy'])->name('taches.destroy');
-    Route::get('/show/{id}', [TacheController::class, 'show'])->name('taches.show');
-});
 
 /*
 FEATURES : FINANCES
