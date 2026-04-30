@@ -4,62 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('auth.notes.index');
+        $notes = Note::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        return view('auth.notes.index', compact('notes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('auth.notes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string'
+        ]);
+
+        Note::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'user_id' => Auth::id()
+        ]);
+
+        return redirect()->route('notes.index')->with('success', 'Note ajoutée');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Note $note)
+    public function edit($id)
     {
-        //
+        $note = Note::findOrFail($id);
+
+        if ($note->user_id !== Auth::id()) abort(403);
+        return view('auth.notes.edit', compact('note'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Note $note)
+    public function update(Request $request, $id)
     {
-        //
+        $note = Note::findOrFail($id);
+
+        if ($note->user_id !== Auth::id()) abort(403);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string'
+        ]);
+
+        $note->update([
+            'title' => $request->title,
+            'content' => $request->content
+        ]);
+
+        return redirect()->route('notes.index')->with('success', 'Note modifiée');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Note $note)
+    public function destroy($id)
     {
-        //
-    }
+        $note = Note::findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Note $note)
-    {
-        //
+        if ($note->user_id !== Auth::id()) abort(403);
+        $note->delete();
+        return redirect()->route('notes.index')->with('success', 'Note supprimée');
     }
 }

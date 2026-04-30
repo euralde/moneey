@@ -4,7 +4,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h2 class="text-xl font-semibold">Gestion des finances</h2>
+            <h2 class="text-xl font-semibold">Gestion des transactions</h2>
             <p class="text-sm text-gray-500">Suivi des entrées et sorties</p>
         </div>
         <a href="{{ route('finances.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">+ Nouvelle transaction</a>
@@ -30,29 +30,29 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-3 text-left">Date</th>
-                    <th class="px-4 py-3 text-left">Titre</th>
-                    <th class="px-4 py-3 text-left">Catégorie</th>
+                    <th class="px-4 py-3 text-left">Name</th>
+                    <th class="px-4 py-3 text-left">departement</th>
                     <th class="px-4 py-3 text-right">Montant</th>
                     <th class="px-4 py-3 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($finances as $finance)
+                @foreach($transactions as $transaction)
                 <tr class="border-t">
-                    <td class="px-4 py-3">{{ \Carbon\Carbon::parse($finance->date)->format('d/m/Y') }}</td>
-                    <td class="px-4 py-3">{{ $finance->titre }}</td>
-                    <td class="px-4 py-3">{{ $finance->categorie }}</td>
+                    <td class="px-4 py-3">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</td>
+                    <td class="px-4 py-3">{{ $transaction->titre }}</td>
+                    <td class="px-4 py-3">{{ $transaction->departement }}</td>
                     <td class="px-4 py-3 text-right">
-                        @if($finance->type == 'entree')
-                            <span class="text-green-600">+ {{ number_format($finance->montant, 0, ',', ' ') }} FCFA</span>
+                        @if($transaction->type == 'entree')
+                            <span class="text-green-600">+ {{ number_format($transaction->montant, 0, ',', ' ') }} FCFA</span>
                         @else
-                            <span class="text-red-600">- {{ number_format($finance->montant, 0, ',', ' ') }} FCFA</span>
+                            <span class="text-red-600">- {{ number_format($transaction->montant, 0, ',', ' ') }} FCFA</span>
                         @endif
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <a href="{{ route('finances.show', $finance->id) }}" class="text-blue-600 mr-2">Voir</a>
-                        <a href="{{ route('finances.edit', $finance->id) }}" class="text-yellow-600 mr-2">Modifier</a>
-                        <form action="{{ route('finances.destroy', $finance->id) }}" method="POST" class="inline">
+                        <a href="{{ route('transactions.show', $transaction->id) }}" class="text-blue-600 mr-2">Voir</a>
+                        <a href="{{ route('transactions.edit', $transaction->id) }}" class="text-yellow-600 mr-2">Modifier</a>
+                        <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" class="inline">
                             @csrf @method('DELETE')
                             <button type="submit" class="text-red-600" onclick="return confirm('Supprimer ?')">Supprimer</button>
                         </form>

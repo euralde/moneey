@@ -12,7 +12,7 @@
         <div class="space-y-4">
             <div>
                 <label class="block mb-1 font-medium">Titre</label>
-                <input type="text" name="titre" class="w-full px-3 py-2 border rounded-lg" required>
+                <input type="text" name="Titre" class="w-full px-3 py-2 border rounded-lg" required>
             </div>
 
             <div>
@@ -24,7 +24,7 @@
             </div>
 
             <div>
-                <label class="block mb-1 font-medium">Catégorie</label>
+                <label class="block mb-1 font-medium">categorie</label>
                 <select name="categorie" class="w-full px-3 py-2 border rounded-lg" required>
                     <option value="Commercial">Commercial</option>
                     <option value="Logistique">Logistique</option>
