@@ -14,9 +14,9 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Titre</label>
                     <input type="text"
-                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('title') border-red-500 @enderror"
-                        placeholder="Titre du département" name="name" required>
-                    @error('title')
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 @error('name') border-red-500 @enderror"
+                        placeholder="Titre du département" name="name" >
+                    @error('name')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>

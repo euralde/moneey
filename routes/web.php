@@ -17,6 +17,7 @@ use App\Http\Controllers\RecrutementController;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\offresController;
 use App\Http\Controllers\ReunionController;
 use Illuminate\Support\Facades\Route;
 
@@ -91,6 +92,14 @@ Route::prefix('recrutement')->group(function () {
     Route::delete('/delete/{id}', [RecrutementController::class, 'destroy'])->name('recrutement.destroy');
     Route::get('/{id}/candidatures', [RecrutementController::class, 'candidatures'])->name('recrutement.candidatures');
     Route::post('/{id}/candidatures/store', [RecrutementController::class, 'candidatures_store'])->name('recrutement.candidatures.store');
+});
+
+Route::prefix('offres')->group(function () {
+    Route::get('/', [offresController::class, 'index'])->name('offres.index');
+
+    // 🔥 remplace id par recrutement
+    Route::get('/show/{recrutement}', [offresController::class, 'show'])->name('offres.show');
+    Route::post('/store/{recrutement}', [offresController::class, 'store'])->name('offres.store');
 });
 
 Route::prefix('candidatures')->group(function () {
@@ -177,7 +186,7 @@ Route::prefix('lead')->group(function () {
     Route::post('/store', [LeadController::class, 'store'])->name('lead.store');
     Route::put('/update/{id}', [LeadController::class, 'update'])->name('lead.update');
     Route::patch('/{id}/status', [LeadController::class, 'status'])->name('lead.status');
-    Route::get('/delete/{id}', [LeadController::class, 'delete'])->name('lead.delete');
+    Route::delete('/delete/{id}', [LeadController::class, 'delete'])->name('lead.delete');
 });
 
 //Page utilisateur

@@ -11,7 +11,7 @@
                     <iconify-icon icon="solar:arrow-left-linear" class="text-2xl"></iconify-icon>
                 </a>
                 <div>
-                    <h1 id="recrutementTitle" class="text-2xl font-bold text-gray-900">Chargement...</h1>
+                    <h1 id="recrutementTitle" class="text-2xl font-bold text-gray-900">{{$recrutement->title}}</h1>
                     <div class="flex flex-wrap gap-2 mt-1">
                         <span id="recrutementStatus"
                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
@@ -21,16 +21,19 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <a id="editBtn" href="#"
-                    class="inline-flex items-center gap-2 px-3 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition text-sm">
-                    <iconify-icon icon="solar:pen-2-linear" class="text-base"></iconify-icon>
-                    Modifier
-                </a>
-                <button id="deleteBtn"
-                    class="inline-flex items-center gap-2 px-3 py-2 text-rose-600 bg-rose-50 rounded-lg hover:bg-rose-100 transition text-sm">
-                    <iconify-icon icon="solar:trash-bin-trash-linear" class="text-base"></iconify-icon>
-                    Supprimer
-                </button>
+                <a href="{{ route('recrutement.edit', $recrutement->id) }}"
+                                            class="text-blue-600 hover:bg-blue-50 p-1.5 rounded">
+                                            <iconify-icon icon="solar:pen-2-linear" class="text-base"></iconify-icon>
+                                            Modifier
+                                        </a>
+                                        <form action="{{ route('recrutement.destroy', $recrutement->id) }}" method="POST" class="inline-block" onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer cet employé ? Cette action est irréversible.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-rose-600 hover:bg-rose-50 p-1.5 rounded transition-colors" title="Supprimer">
+                                                <iconify-icon icon="solar:trash-bin-trash-linear" class="text-base"></iconify-icon>
+                                                Supprimer
+                                            </button>
+                                        </form>
             </div>
         </div>
 
@@ -48,15 +51,15 @@
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between pb-2 border-b border-gray-100">
                             <span class="text-gray-500">Date de création</span>
-                            <span class="font-medium text-gray-900" id="recrutementCreated">-</span>
+                            <span class="font-medium text-gray-900" id="recrutementCreated">{{$recrutement->created_at}}</span>
                         </div>
                         <div class="flex justify-between pb-2 border-b border-gray-100">
                             <span class="text-gray-500">Date limite</span>
-                            <span class="font-medium text-gray-900" id="recrutementDeadline">-</span>
+                            <span class="font-medium text-gray-900" id="recrutementDeadline">{{$recrutement->deadline}}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-500">Candidatures reçues</span>
-                            <span class="font-medium text-blue-600" id="recrutementCandidatures">0</span>
+                            <span class="font-medium text-blue-600" id="recrutementCandidatures">{{$totalCandidatures}}</span>
                         </div>
                     </div>
                 </div>
@@ -67,7 +70,7 @@
                         <iconify-icon icon="solar:clipboard-text-linear" class="text-blue-500 text-lg"></iconify-icon>
                         Description du poste
                     </h3>
-                    <p id="recrutementDesc" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">-</p>
+                    <p id="recrutementDesc" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{$recrutement->description}}</p>
                 </div>
 
                 <!-- Prérequis -->
@@ -76,7 +79,7 @@
                         <iconify-icon icon="solar:checklist-linear" class="text-blue-500 text-lg"></iconify-icon>
                         Prérequis & compétences
                     </h3>
-                    <p id="recrutementRequirements" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">-</p>
+                    <p id="recrutementRequirements" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{$recrutement->requirements}}</p>
                 </div>
             </div>
 
@@ -90,7 +93,7 @@
                                     class="text-blue-500 text-lg"></iconify-icon>
                                 Candidatures reçues
                             </h3>
-                            <p class="text-xs text-gray-400" id="candidaturesCount">0 candidature(s)</p>
+                            <p class="text-xs text-gray-400">{{$totalCandidatures}} Candidatures</p>
                         </div>
                         <button id="openCandidatureModal"
                             class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition">
@@ -110,7 +113,32 @@
                                     <th class="px-5 py-3 text-center">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="candidaturesTableBody" class="divide-y divide-gray-100"></tbody>
+                            <tbody style="text-align: center">
+                                @foreach ($candidatures as $candidature)
+                                    <tr>
+                                        <td>{{ $candidature->name }}</td>
+                                        <td>{{ $candidature->phone }}</td>
+                                        <td>{{ $candidature->status }}</td>
+                                        <td>{{ $candidature->created_at }}</td>
+                                        <td class="px-6 py-4 text-center">
+                                            <div class="flex items-center justify-center gap-2">
+                                                <a href="{{ route('candidatures.show', $candidature->id) }}"
+                                                class="text-green-600 hover:bg-green-50 p-1.5 rounded"
+                                                title="Voir détails">
+                                                    <iconify-icon icon="solar:eye-linear" class="text-base"></iconify-icon>
+                                                </a>
+                                                <form action="{{ route('candidatures.destroy', $candidature->id) }}" method="POST" class="inline-block" onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer cet employé ? Cette action est irréversible.')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-rose-600 hover:bg-rose-50 p-1.5 rounded transition-colors" title="Supprimer">
+                                                        <iconify-icon icon="solar:trash-bin-trash-linear" class="text-base"></iconify-icon>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                     <div id="emptyCandidatures" class="text-center py-12 hidden">

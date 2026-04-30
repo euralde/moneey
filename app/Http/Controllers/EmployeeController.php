@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\Departement;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -50,12 +51,29 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         
-        /*$request->validate([
+        $validator = Validator::make($request->all(), [
             'lastname' => 'required',
             'firstname' => 'required',
             'email' => 'required|email|unique:users',
-            'departement_id' => 'required'
-        ]);*/
+            'department_id' => 'required',
+            'hire_date' => 'required',
+            'poste' => 'required',
+            'phone' => 'required',
+        ], [
+            'lastname.required' => 'Nom est requis',
+            'firstname.required' => 'Prénom est requis',
+            'email.required' => 'Email requis',
+            'department_id.required' => 'Département requis',
+            'poste.required' => 'Poste requis',
+            'phone.required' => 'Numéro de téléphone requis',
+            'hire_date.required' => 'Date d\'embauche requis',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('employes.index')
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         DB::beginTransaction();
 
@@ -99,13 +117,7 @@ class EmployeeController extends Controller
 
     public function update(Request $request, Employee $employee, $id)
     { 
-        /*$request->validate([
-            'lastname' => 'required',
-            'firstname' => 'required',
-            'email' => 'required|email|unique:users,email,' . $employee->user_id,
-            'department_id' => 'required'
-        ]);*/
-
+        
         $employee = Employee::findOrFail($id);
         DB::beginTransaction();
 

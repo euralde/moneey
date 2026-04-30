@@ -22,6 +22,6 @@ class Candidature extends Model
 
     public function recrutement()
     {
-        return $this->belongsTo(Recrutement::class);
+        return $this->belongsTo(Recrutement::class, 'recrutement_id');
     }
 }
