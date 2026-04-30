@@ -133,22 +133,31 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" name="firstname"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('firstname') border-red-500 @enderror" value="{{ old('firstname') }}"
                                     placeholder="Prénom">
+                                    @error('firstname')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" name="lastname"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('lastname') border-red-500 @enderror" value="{{ old('lastname') }}"
                                     placeholder="Nom">
+                                    @error('lastname')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
-                                <input type="text" name="poste" class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                <input type="text" name="poste" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('poste') border-red-500 @enderror" value="{{ old('poste') }}"
                                     placeholder="Ex: Développeur Front-end">
+                                    @error('poste')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
@@ -163,28 +172,28 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" name="email" class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                <input type="email" name="email" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('email') border-red-500 @enderror" value="{{ old('email') }}"
                                     placeholder="prenom.nom@afroplume.com">
+                                    @error('email')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                                <input type="tel" name="phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                <input type="tel" name="phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('phone') border-red-500 @enderror" value="{{ old('phone') }}"
                                     placeholder="+229 XX XX XX XX XX">
+                                    @error('phone')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date d'embauche</label>
-                                <input type="date" name="hire_date" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                                <select  class="w-full px-3 py-2 border border-gray-200 rounded-lg" name="status">
-                                    <option value="actif">🟢 Actif</option>
-                                    <option value="conge">🟡 En congé</option>
-                                    <option value="teletravail">🔵 Télétravail</option>
-                                    <option value="inactif">⚫ Inactif</option>
-                                </select>
+                                <input type="date" name="hire_date" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('hire_date') border-red-500 @enderror" value="{{ old('hire_date') }}">
+                                @error('hire_date')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div>
@@ -205,100 +214,100 @@
     </div>
 
     <!-- MODAL Modification Employé -->
-<div id="editEmployeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
-        id="editModalContainer">
-        <div class="flex justify-between items-center p-5 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-900">Modifier l'employé</h3>
-            <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
-                <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
-            </button>
+    <div id="editEmployeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div>
+        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
+            id="editModalContainer">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-900">Modifier l'employé</h3>
+                <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+                </button>
+            </div>
+            
+            <form action="{{ route('employes.update', $employee->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="p-5 space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" name="firstname" value="{{ $employee->user->firstname }}"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                placeholder="Prénom">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" name="lastname" value="{{ $employee->user->lastname }}"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                placeholder="Nom">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
+                            <input type="text" name="poste" value="{{ $employee->poste }}"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                placeholder="Ex: Développeur Front-end">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
+                            <select name="department_id" 
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                                <option value="">Choisir un département</option>
+                                @foreach($departements as $dep)
+                                    <option value="{{ $dep->id }}"
+                                        {{ $employee->department_id == $dep->id ? 'selected' : '' }}>
+                                        {{ $dep->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" name="email" value="{{$employee->user->email}}"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                placeholder="prenom.nom@afroplume.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                            <input type="tel" name="phone" value="{{ $employee->user->phone }}"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                placeholder="+229 XX XX XX XX XX">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                            <select name="status" 
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                                <option value="actif">🟢 Actif</option>
+                                <option value="conge">🟡 En congé</option>
+                                <option value="teletravail">🔵 Télétravail</option>
+                                <option value="inactif">⚫ Inactif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Compétences / Notes</label>
+                        <textarea name="skills" rows="2"
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
+                            placeholder="React, Node.js, Gestion d'équipe...">{{$employee->skills}}</textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
+                    <button id="cancelEditModalBtn"
+                        class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Mettre à jour</button>
+                </div>
+            </form>
         </div>
-        
-        <form action="{{ route('employes.update', $employee->id) }}" method="POST">
-            @csrf
-            @method('PATCH')
-            <div class="p-5 space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="firstname" value="{{ $employee->user->firstname }}"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
-                            placeholder="Prénom">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="lastname" value="{{ $employee->user->lastname }}"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
-                            placeholder="Nom">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
-                        <input type="text" name="poste" value="{{ $employee->poste }}"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg"
-                            placeholder="Ex: Développeur Front-end">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                        <select name="department_id" 
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                            <option value="">Choisir un département</option>
-                            @foreach($departements as $dep)
-                                <option value="{{ $dep->id }}"
-                                    {{ $employee->department_id == $dep->id ? 'selected' : '' }}>
-                                    {{ $dep->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" name="email" value="{{$employee->user->email}}"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg"
-                            placeholder="prenom.nom@afroplume.com">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                        <input type="tel" name="phone" value="{{ $employee->user->phone }}"
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg"
-                            placeholder="+229 XX XX XX XX XX">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                        <select name="status" 
-                            class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                            <option value="actif">🟢 Actif</option>
-                            <option value="conge">🟡 En congé</option>
-                            <option value="teletravail">🔵 Télétravail</option>
-                            <option value="inactif">⚫ Inactif</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Compétences / Notes</label>
-                    <textarea name="skills" rows="2"
-                        class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
-                        placeholder="React, Node.js, Gestion d'équipe...">{{$employee->skills}}</textarea>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
-                <button id="cancelEditModalBtn"
-                    class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
-                <button type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Mettre à jour</button>
-            </div>
-        </form>
     </div>
-</div>
 
     @push('scripts')
         <script>
@@ -364,14 +373,6 @@
             cancelEditBtn.addEventListener('click', closeEditModal);
             editBackdrop.addEventListener('click', closeEditModal);
 
-            // Fermer les modals avec la touche Echap
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (!modal.classList.contains('hidden')) closeModal();
-                    if (!editModal.classList.contains('hidden')) closeEditModal();
-                }
-            });
-
             // Événements d'ouverture
             openBtn.addEventListener('click', openModal);
 
@@ -379,14 +380,22 @@
             closeBtn.addEventListener('click', closeModal);
             cancelBtn.addEventListener('click', closeModal);
             backdrop.addEventListener('click', closeModal);
+            
+            @if ($errors->any())
+                document.addEventListener("DOMContentLoaded", function () {
+                    const modal = document.getElementById('employeeModal');
+                    const container = document.getElementById('modalContainer');
 
-            // Fermer avec la touche Echap
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                    closeModal();
-                }
-            });
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+
+                    container.classList.remove('scale-95', 'opacity-0');
+                    container.classList.add('scale-100', 'opacity-100');
+                });
+            @endif
         </script>
+
+        
 
         <style>
             .modal-backdrop {

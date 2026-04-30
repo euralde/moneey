@@ -52,7 +52,7 @@ Route::prefix('tasks')->middleware('auth')->group(function () {
 });
 
 /*
-FEATURES :  EMPLOYÉS (RH)
+FEATURES :  EMPLOYÉS (RH)%
 */
 Route::prefix('employes')->group(function () {
     Route::get('/', [EmployeeController::class, 'index'])->name('employes.index');

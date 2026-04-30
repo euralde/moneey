@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\candidature;
+use App\Models\Candidature as ModelsCandidature;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Can;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CandidatureController extends Controller
 {
@@ -34,9 +37,10 @@ class CandidatureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(candidature $candidature)
+    public function show(Candidature $candidature, $id)
     {
-        //
+        $candidature = Candidature::find($id);
+        return view('auth.candidatures.show', compact('candidature'));
     }
 
     /**
@@ -58,8 +62,11 @@ class CandidatureController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(candidature $candidature)
+    public function destroy(Candidature $candidature, $id)
     {
-        //
+        $candidature = Candidature::find($id);
+        $candidature->delete();
+        Alert::success('Candidature supprimé avec succès');
+        return redirect()->route('recrutement.show', $id);
     }
 }

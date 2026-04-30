@@ -74,5 +74,8 @@ class User extends Authenticatable
         return $this->hasMany(Reunion::class, 'created_by');
     }
 
-    //Leads
+    public function leads()
+    {
+        return $this->hasMany(Lead::class, 'assigned_to');
+    }
 }

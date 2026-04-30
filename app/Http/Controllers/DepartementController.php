@@ -26,7 +26,9 @@ class DepartementController extends Controller
     //Page pour editer un departement
     public function edit($id)
     {
+    
         $departement = Departement::find($id);
+
         if ($departement === null) {
             abort(404);
         }
@@ -62,7 +64,26 @@ class DepartementController extends Controller
     //Function pour modifier un departement
     public function update(Request $request, $id)
     {
+
         $departement = Departement::find($id);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:departements,name,' . $id,
+            'description' => 'nullable',
+            'status' => 'required|in:actif,inactif',
+        ], [
+            'name.required' => 'Nom est requis',
+            'name.unique' => 'Nom doit etre unique',
+            'status.required' => 'Statut est requis',
+            'status.in' => 'Statut doit etre actif ou inactif',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('departements.edit', $id)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $departement->update($request->all());
 
         Alert::success('Département modifié avec succès');

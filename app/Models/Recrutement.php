@@ -11,7 +11,7 @@ class Recrutement extends Model
 
     protected $fillable = [
         'user_id',
-        'departement_id',
+        'department_id',
         'title',
         'description',
         'requirements',
@@ -26,16 +26,16 @@ class Recrutement extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function departement()
     {
-        return $this->belongsTo(Departement::class);
+        return $this->belongsTo(Departement::class, 'department_id');
     }
 
     public function candidatures()
     {
-        return $this->hasMany(Candidature::class);
+        return $this->hasMany(Candidature::class, 'candidature_id');
     }
 }

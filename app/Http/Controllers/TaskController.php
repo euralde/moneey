@@ -11,8 +11,14 @@ class TaskController extends Controller
     // AFFICHAGE (vue calendrier)
     public function index()
     {
+<<<<<<< HEAD
       $tasks = Task::all();   
         return view('auth.tasks.index');
+=======
+            $tasks = Task::all();
+        //liste des taches d'un utilisateur
+        return view('auth.tasks.index', compact('tasks'));
+>>>>>>> 47040dd5ca2c2dfbee19815dfa84fc013cd8a3d6
     }
 
     // API : récupérer toutes les tâches de l'utilisateur
@@ -81,6 +87,7 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+<<<<<<< HEAD
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -97,6 +104,20 @@ class TaskController extends Controller
         ]);
 
         return redirect()->route('task.index')->with('success', 'Tâche ajoutée');
+=======
+        $task = Task::create([
+            'user_id' => auth()->id(), // 🔥 important si tu as un user
+            'title' => $request->title,
+            'description' => $request->description,
+            'priority' => $request->priority,
+            'status' => 'a-faire', // valeur par défaut
+            'start' => $request->start, // ✅
+            'end' => $request->start, // ou null si tu veux
+            'assignee' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Tâche ajoutée');
+>>>>>>> 47040dd5ca2c2dfbee19815dfa84fc013cd8a3d6
     }
 
     public function edit($id)
@@ -138,10 +159,15 @@ class TaskController extends Controller
 
     public function complete($id)
     {
+<<<<<<< HEAD
         $tache = Task::findOrFail($id);
         if ($tache->user_id !== Auth::id()) abort(403);
         $tache->update(['is_completed' => true]);
         return redirect()->route('taches.index')->with('success', 'Tâche terminée');
+=======
+        $task->delete();
+        return back();
+>>>>>>> 47040dd5ca2c2dfbee19815dfa84fc013cd8a3d6
     }
 
     public function uncomplete($id)
