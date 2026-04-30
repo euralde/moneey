@@ -380,7 +380,9 @@
             closeEditBtn.addEventListener('click', closeEditModal);
             cancelEditBtn.addEventListener('click', closeEditModal);
             editBackdrop.addEventListener('click', closeEditModal);
+        </script>
 
+        <script>
             @if ($errors->any())
                 document.addEventListener("DOMContentLoaded", function () {
                     const modal = document.getElementById('leadModal');
