@@ -14,7 +14,6 @@ class ConversationController extends Controller
     {
         $users = User::where('id', '!=', Auth::id())->get();
 
-        // Calcul des messages non lus (via conversation)
         foreach ($users as $user) {
             $conversation = Conversation::where(function ($q) use ($user) {
                 $q->where('sender_id', Auth::id())->where('receiver_id', $user->id);
@@ -52,5 +51,16 @@ class ConversationController extends Controller
         }
 
         return response()->json($conversation);
+    }
+
+    public function unreadCount()
+    {
+        $userId = auth()->id();
+
+        $count = Message::where('receiver_id', $userId)
+            ->where('is_read', false)
+            ->count();
+
+        return response()->json(['unread' => $count]);
     }
 }
