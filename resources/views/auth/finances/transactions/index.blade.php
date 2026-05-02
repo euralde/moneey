@@ -49,12 +49,12 @@
                     <option value="entree" {{ request('type') == 'entree' ? 'selected' : '' }}>Entrées</option>
                     <option value="sortie" {{ request('type') == 'sortie' ? 'selected' : '' }}>Sorties</option>
                 </select>
-                 <select name="departement_id" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
-    <option value="all" {{ request('departement_id') == 'all' ? 'selected' : '' }}>Tous les départements</option>
-    <option value="Commercial" {{ request('departement_id') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
-    <option value="Achat de fourniture" {{ request('departement_id') == 'Achat de fourniture' ? 'selected' : '' }}>Achat de fourniture</option>
-    <option value="Immobilier" {{ request('departement_id') == 'Immobilier' ? 'selected' : '' }}>Immobilier</option>
-</select>
+                <select name="departement_id" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+                    <option value="">Tous les départements</option>
+                    @foreach($departements as $dep)
+                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
+                    @endforeach
+                </select>
                 <button type="submit" class="px-3 py-2 bg-blue-600 text-white rounded-lg">Filtrer</button>
                 <a href="{{ route('transactions.index') }}" class="px-3 py-2 text-gray-500 border border-gray-200 rounded-lg">Réinitialiser</a>
             </form>

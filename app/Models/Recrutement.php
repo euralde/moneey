@@ -36,6 +36,6 @@ class Recrutement extends Model
 
     public function candidatures()
     {
-        return $this->hasMany(Candidature::class, 'candidature_id');
+        return $this->hasMany(Candidature::class, 'recrutement_id');
     }
 }

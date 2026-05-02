@@ -64,9 +64,9 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
         return view('auth.finances.show', compact('transaction'));
     }
- 
-       public function edit($id)
-     {
+
+    public function edit($id)
+    {
         $departements = Departement::all();
         $transaction = Transaction::findOrFail($id);
         return view('auth.finances.edit', compact('transaction','departements'));
@@ -75,9 +75,9 @@ class TransactionController extends Controller
     public function update(Request $request, Transaction $transaction, $id)
     {
         Validator::make([
-           'title'=>'',
+            'title'=>'',
         ],[
-             'title'=>'required',
+            'title'=>'required',
         ]);
 
         $transaction = Transaction::find($id);

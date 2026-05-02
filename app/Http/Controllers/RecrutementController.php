@@ -18,8 +18,9 @@ class RecrutementController extends Controller
      */
     public function index()
     {
-        $recrutements = Recrutement::with(['user', 'departement'])->get();
+        $recrutements = Recrutement::with(['user', 'departement', 'candidatures'])->get();
         $departements = Departement::all();
+        $candidatures = Candidature::all();
 
         // Statistiques
         $totalOffres = Recrutement::count();
@@ -28,7 +29,7 @@ class RecrutementController extends Controller
         $totalpourvue = Recrutement::where('status', 'pourvue')->count();
         $totalfermée = Recrutement::where('status', 'fermee')->count();
         
-        return view('auth.recrutements.index', compact('recrutements', 
+        return view('auth.recrutements.index', compact('recrutements', 'candidatures', 
             'departements', 
             'totalOffres', 
             'totalOuvertes', 

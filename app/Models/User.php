@@ -27,6 +27,14 @@ class User extends Authenticatable
         // 'email_verified_at' => 'datetime',
     ];
 
+    public function getInitialsAttribute()
+    {
+        return strtoupper(
+            substr($this->firstname ?? '', 0, 1) .
+            substr($this->lastname ?? '', 0, 1)
+        );
+    }
+
     // Relations
     public function employee()
     {

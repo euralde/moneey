@@ -12,6 +12,7 @@ use App\Http\Controllers\RecrutementController;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\offresController;
 use App\Http\Controllers\ReunionController;
 use App\Models\Conversation;
@@ -24,14 +25,23 @@ FEATURES :  AUTHENTIFICATION
 Route::get('/', function () {
     return view('login');
 });
+
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+
 Route::post('login', [UserController::class, 'login'])->name('login');
-Route::post('logout', [UserController::class, 'logout'])->name('logout');
+
+Route::post('logout', [UserController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
 Route::get('/auth/me', [UserController::class, 'me'])->name('profile');
 
 /*
 FEATURES :  TRANSACTIONS FINANCIÈRES
 */
-Route::prefix('transactions')->group(function () {
+Route::prefix('transactions')->middleware('auth')->group(function () {
     Route::get('/', [TransactionController::class, 'index'])->name('transactions.index');
     Route::get('/create', [TransactionController::class, 'create'])->name('transactions.create');
     Route::post('/store', [TransactionController::class, 'store'])->name('transactions.store');
@@ -44,7 +54,7 @@ Route::prefix('transactions')->group(function () {
 /*
 FEATURES :  TÂCHES
 */
-Route::prefix('tasks')->group(function () {
+Route::prefix('tasks')->middleware('auth')->group(function () {
     Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/all', [TaskController::class, 'all'])->name('tasks.all');
     Route::get('/overdue', [TaskController::class, 'overdue'])->name('tasks.overdue');
@@ -62,7 +72,7 @@ Route::prefix('tasks')->group(function () {
 /*
 FEATURES :  EMPLOYÉS (RH)
 */
-Route::prefix('employes')->group(function () {
+Route::prefix('employes')->middleware('auth')->group(function () {
     Route::get('/', [EmployeeController::class, 'index'])->name('employes.index');
     Route::get('/create', [EmployeeController::class, 'create'])->name('employes.create');
     Route::post('/store', [EmployeeController::class, 'store'])->name('employes.store');
@@ -77,7 +87,7 @@ Route::prefix('employes')->group(function () {
 /*
 FEATURES : CANDIDATURES (Recrutement)
 */
-Route::prefix('recrutement')->group(function () {
+Route::prefix('recrutement')->middleware('auth')->group(function () {
     Route::get('/', [RecrutementController::class, 'index'])->name('recrutement.index');
     Route::get('/create', [RecrutementController::class, 'create'])->name('recrutement.create');
     Route::post('/store', [RecrutementController::class, 'store'])->name('recrutement.store');
@@ -98,7 +108,7 @@ Route::prefix('offres')->group(function () {
     Route::post('/store/{recrutement}', [offresController::class, 'store'])->name('offres.store');
 });
 
-Route::prefix('candidatures')->group(function () {
+Route::prefix('candidatures')->middleware('auth')->group(function () {
     Route::get('/{id}', [CandidatureController::class, 'show'])->name('candidatures.show');
     Route::get('/edit/{id}', [CandidatureController::class, 'edit'])->name('candidatures.edit');
     Route::put('/{id}', [CandidatureController::class, 'update'])->name('candidatures.update');
@@ -109,7 +119,7 @@ Route::prefix('candidatures')->group(function () {
 /*
 FEATURES : BLOC NOTES
 */
-Route::prefix('notes')->group(function () {
+Route::prefix('notes')->middleware('auth')->group(function () {
     Route::get('/', [NoteController::class, 'index'])->name('notes.index');
     Route::get('/create', [NoteController::class, 'create'])->name('notes.create');
     Route::post('/store', [NoteController::class, 'store'])->name('notes.store');
@@ -122,7 +132,7 @@ Route::prefix('notes')->group(function () {
 /*
 FEATURES : DEPARTEMENT
 */
-Route::prefix('departements')->group(function () {
+Route::prefix('departements')->middleware('auth')->group(function () {
     Route::get('/', [DepartementController::class, 'index'])->name('departements.index');
     Route::get('/create', [DepartementController::class, 'create'])->name('departements.create');
     Route::post('/store', [DepartementController::class, 'store'])->name('departements.store');
@@ -137,7 +147,7 @@ Route::prefix('departements')->group(function () {
 /*
 FEATURES : Reunions
 */
-Route::prefix('reunions')->group(function () {
+/*Route::prefix('reunions')->group(function () {
     Route::get('/', [ReunionController::class, 'index'])->name('reunion.index');
     Route::get('/upcoming', [ReunionController::class, 'upcoming'])->name('reunion.upcoming');
     Route::get('/past', [ReunionController::class, 'past'])->name('reunion.past');
@@ -148,12 +158,12 @@ Route::prefix('reunions')->group(function () {
     Route::patch('/{id}/status', [ReunionController::class, 'status'])->name('reunion.status');
     Route::post('/{id}/invite', [ReunionController::class, 'invite'])->name('reunion.invite');
     Route::delete('/delete/{id}', [ReunionController::class, 'destroy'])->name('reunion.delete');
-});
+});*/
 
 /*
 FEATURES : Leads
 */
-Route::prefix('lead')->group(function () {
+Route::prefix('lead')->middleware('auth')->group(function () {
     Route::get('/', [LeadController::class, 'index'])->name('lead.index');
     Route::post('/store', [LeadController::class, 'store'])->name('lead.store');
     Route::put('/update/{id}', [LeadController::class, 'update'])->name('lead.update');
@@ -164,7 +174,7 @@ Route::prefix('lead')->group(function () {
 /*
 FEATURES : Utilisateurs
 */
-Route::get('/users', function () {
+/*Route::get('/users', function () {
     return view('auth.utilisateurs.users');
 })->name('users');
 
@@ -174,19 +184,23 @@ Route::post('/register', [UserController::class, 'store'])->name('register');
 Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
 Route::post('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
 Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
-Route::get('/users/attribuer/{id}', [UserController::class, 'attribuer'])->name('users.attribuer');
+Route::get('/users/attribuer/{id}', [UserController::class, 'attribuer'])->name('users.attribuer');*/
 
 /*
 FEATURES : Dashboard
 */
-Route::get('/dashboard', function () {
-    return view('auth.dashboard');
-})->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', fn() => view('auth.dashboard'))->name('dashboard');
+});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 /*
 FEATURES : FINANCES
 */
-Route::prefix('finances')->group(function () {
+/*Route::prefix('finances')->group(function () {
     Route::get('/', [FinanceController::class, 'index'])->name('finances.index');
     Route::get('/create', [FinanceController::class, 'create'])->name('finances.create');
     Route::post('/store', [FinanceController::class, 'store'])->name('finances.store');
@@ -194,7 +208,7 @@ Route::prefix('finances')->group(function () {
     Route::get('/edit/{id}', [FinanceController::class, 'edit'])->name('finances.edit');
     Route::post('/update/{id}', [FinanceController::class, 'update'])->name('finances.update');
     Route::delete('/delete/{id}', [FinanceController::class, 'destroy'])->name('finances.destroy');
-});
+});*/
 
 /*
  * ======================================================

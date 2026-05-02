@@ -27,7 +27,7 @@ class EmployeeController extends Controller
         $totalTeletravail = Employee::where('status', 'teletravail')->count();
         $totalDepartements = Departement::count();
 
-        return view('auth.employes.index', compact('employees', 
+        return view('auth.employes.index', compact('employees',
             'departements', 
             'totalEmployes', 
             'totalActifs', 
@@ -83,6 +83,7 @@ class EmployeeController extends Controller
                 'firstname' => $request->firstname,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'profil' => $request->profil,
                 'password' => Hash::make($request->email), // temporaire
             ]);
 
@@ -90,7 +91,7 @@ class EmployeeController extends Controller
             Employee::create([
                 'user_id' => $user->id,
                 'department_id' => $request->department_id,
-                'status' => $request->status,
+                'status' => 'actif',
                 'hire_date' => $request->hire_date,
                 'poste' => $request->poste,
                 'skills' => $request->skills,
@@ -118,7 +119,7 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee, $id)
     { 
         
-        $employee = Employee::findOrFail($id);
+        $employee = Employee::find($id);
         DB::beginTransaction();
 
         
@@ -128,7 +129,8 @@ class EmployeeController extends Controller
                 'firstname' => $request->firstname,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'password' => $request->email, // temporaire
+                'profil' => $request->profil,
+                'password' => Hash::make($request->password), // temporaire
             ]);
 
             // Mettre à jour l'employé

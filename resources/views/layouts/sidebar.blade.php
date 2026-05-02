@@ -1,3 +1,6 @@
+@php
+    $profil = auth()->user()->profil;
+@endphp
 <aside
     class="fixed md:static inset-y-0 left-0 w-[260px] bg-slate-900 text-slate-300 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-200 flex-shrink-0"
     id="sidebar">
@@ -12,57 +15,51 @@
                 class="text-lg mr-3 {{ request()->routeIs('dashboard') ? 'text-blue-400' : '' }}"></iconify-icon>
             <span class="font-medium">Dashboard</span>
         </a>
-
+        @if(auth()->user()->profil === 'gerant')
         <a href="{{ route('employes.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('employes.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
+            <iconify-icon icon="solar:users-group-two-rounded-linear" class="text-lg mr-3"></iconify-icon>
             <span>Utilisateur</span>
         </a>
+        
 
         <a href="{{ route('departements.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('departements.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:server-square-linear" class="text-lg mr-3"></iconify-icon>
+            <iconify-icon icon="solar:buildings-2-linear" class="text-lg mr-3"></iconify-icon>
             <span>Départements</span>
         </a>
+        @endif
 
         <a href="{{ route('notes.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('notes.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:document-text-linear" class="text-lg mr-3"></iconify-icon>
+            <iconify-icon icon="solar:notes-linear" class="text-lg mr-3"></iconify-icon>
             <span>Notes</span>
         </a>
-
+        @if(in_array($profil, ['gerant', 'manager']))
         <a href="{{ route('transactions.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('transactions.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
             <iconify-icon icon="solar:wallet-money-linear" class="text-lg mr-3"></iconify-icon>
             <span>Finances</span>
         </a>
+        @endif
 
         <a href="{{ route('lead.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('lead.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:wallet-money-linear" class="text-lg mr-3"></iconify-icon>
+            <iconify-icon icon="solar:chart-square-linear" class="text-lg mr-3"></iconify-icon>
             <span>CRM</span>
         </a>
 
+        @if(in_array($profil, ['gerant', 'manager']))
         <a href="{{ route('recrutement.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('recrutement.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
             <iconify-icon icon="solar:users-group-rounded-linear" class="text-lg mr-3"></iconify-icon>
             <span>Recrutements</span>
         </a>
-
-        <a href="{{ route('reunion.index') }}"
-            class="flex items-center px-6 py-2.5 {{ request()->routeIs('reunion.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:users-group-rounded-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Réunions</span>
-        </a>
-
-        <!-- <a href="#" class="flex items-center px-6 py-2.5 {{ request()->routeIs('dashboard') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:chat-round-dots-linear" class="text-lg mr-3"></iconify-icon>
-            <span>Collaboration</span>
-        </a> -->
+        @endif
 
         <a href="{{ route('tasks.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('tasks.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
-            <iconify-icon icon="solar:calendar-mark-linear"
+            <iconify-icon icon="solar:checklist-minimalistic-linear"
                 class="text-lg mr-3 {{ request()->routeIs('tasks.index') ? 'text-blue-400' : '' }}"></iconify-icon>
             <span>Tâches</span>
         </a>

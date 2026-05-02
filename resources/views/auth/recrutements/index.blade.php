@@ -51,6 +51,12 @@
             </a>
         </div>
 
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded-lg mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        
         <!-- Datatable -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
@@ -74,7 +80,13 @@
                                 <td>{{ $recrutement->location }}</td>
                                 <td>{{ $recrutement->status }}</td>
                                 <td>{{ $recrutement->deadline }}</td>
-                                <td></td>
+                                <td>
+                                    @forelse($recrutement->candidatures as $candidature)
+                                        <div>{{ $candidature->count() }}</div>
+                                    @empty
+                                        <span>Aucune candidature</span>
+                                    @endforelse
+                                </td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <a href="{{ route('recrutement.show', $recrutement->id) }}"
