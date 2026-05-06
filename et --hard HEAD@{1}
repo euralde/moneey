@@ -1,0 +1,162 @@
+[33mcommit 28b4ad45c34f2b0b5131b5f3b00ba873d75bb66f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mjunior_branch[m[33m, [m[1;31morigin/junior_branch[m[33m)[m
+Merge: e657f10 888f35c
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat May 2 11:29:48 2026 +0100
+
+    J'ai gérer l'accès aux pages graces aux middlawres
+
+[33mcommit e657f10f85c1fc28553ea06a6501d104a73c8067[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat May 2 11:28:23 2026 +0100
+
+    J'ai gérer l'accès aux pages graces aux middlawres
+
+[33mcommit 888f35c6a086e016f5655b318bfc166c7efb95ac[m
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Thu Apr 30 17:30:57 2026 +0100
+
+    Rien de nouveau
+
+[33mcommit a0609a5627112c51095284099f694c58815abeeb[m
+Merge: 6fde152 47040dd
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Thu Apr 30 15:25:21 2026 +0100
+
+    Ajout notification messages non lus et corrections tâches
+
+[33mcommit 6fde15205e2bcbad7bc43f36828d8587f8d0d400[m
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Thu Apr 30 15:15:37 2026 +0100
+
+    Ajout notification messages non lus et corrections tâches
+
+[33mcommit 47040dd5ca2c2dfbee19815dfa84fc013cd8a3d6[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Thu Apr 30 15:13:54 2026 +0100
+
+    j'ai réaliser la fonctionnalité de gestion des taches
+
+[33mcommit 22cd6e1a95e9082f310a3da92c8472acab756e83[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Thu Apr 30 15:10:30 2026 +0100
+
+    j'ai réaliser la fonctionnalité de gestion des taches
+
+[33mcommit 6c8bd5ade423f7dafea7c9aa9d3b66013e8b7b0c[m
+Merge: 123b2a6 b87434d
+Author: euralde <julioassokpe@gmail.com>
+Date:   Thu Apr 30 09:52:03 2026 +0100
+
+    j'ai réalisé la fonctionnalité de gestion des leads, de gestion des employés, de gestion des recrutements
+
+[33mcommit 123b2a6a45e0c003f0aa77febdd821f2b093baa7[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Thu Apr 30 09:50:24 2026 +0100
+
+    j'ai réalisé la fonctionnalité de gestion des leads, de gestion des employés, de gestion des recrutements
+
+[33mcommit b87434da4436b2788f315df3fab841d7d3e4897f[m
+Merge: d8082c7 bf7d0a9
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Wed Apr 29 22:46:22 2026 +0100
+
+    Ajout des modules Finances, Messages (chat) et Notes (CRUD complet)
+
+[33mcommit d8082c7b1116858012f042eeb3850cd3512f663b[m
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Wed Apr 29 18:40:17 2026 +0100
+
+    Ajout des modules Messages (chat), Finances (transactions) et Notes (CRUD)
+
+[33mcommit bf7d0a951253c09bd633ab7f74be4cf4b73980e0[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Mon Apr 27 19:40:03 2026 +0100
+
+    j'ai réaliser la fonctionnalité gestion des employés
+
+[33mcommit d326510a2844181031a520926dd6a07c738711c0[m
+Author: Junior SA <juniorsanni527@gmail.com>
+Date:   Mon Apr 27 09:58:42 2026 +0100
+
+    Feautes: Database
+
+[33mcommit d0465cc026959bdb4527199b9f42f2bffdc45c52[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat Apr 25 18:50:27 2026 +0100
+
+    J'ai réaliser la fonctionnalité d'affectation
+
+[33mcommit a1121a1b8bf15094920d9f2f50d0f10ae0acc9fc[m
+Merge: ca77342 98b6267
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat Apr 25 12:45:12 2026 +0100
+
+    modif
+
+[33mcommit ca77342edc9ae29c0bc0d25d6e690f3f504ae6f6[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat Apr 25 12:44:46 2026 +0100
+
+    modif
+
+[33mcommit 98b626781035dad868eeabc0176e2fbc2846024a[m
+Author: Junior SA <juniorsanni527@gmail.com>
+Date:   Sat Apr 25 12:35:22 2026 +0100
+
+    Features: Review Departement function
+
+[33mcommit 45fc65bde1603136579e55bcb42ae6b0635e66fc[m
+Merge: e567a3e 783f9d8
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat Apr 25 10:59:43 2026 +0100
+
+    J'ai travaillé sur la fonctionnalité ajouté un utilisateur et modifier un utilisateur
+
+[33mcommit e567a3ec195afb0dcc2e1984c5bc5f4d07861bfe[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Sat Apr 25 10:57:32 2026 +0100
+
+    J'ai travaillé sur la fonctionnalité ajouté un utilisateur et modifier un utilisateur
+
+[33mcommit 783f9d8731a60689c938e51003d64c02926fd9a1[m
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Sat Apr 25 10:45:12 2026 +0100
+
+    update
+
+[33mcommit 4583441de9ae2242b279f1d70627e1841eeee66a[m
+Merge: 77b6a4f d52fca4
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Fri Apr 24 23:01:06 2026 +0100
+
+    Résolution du conflit sur routes/web.php
+
+[33mcommit 77b6a4f50021111a70b1af17a70a1995db89369b[m
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Fri Apr 24 22:54:21 2026 +0100
+
+    Correction complete : title au lieu de nom pour departements
+
+[33mcommit d52fca4620ad0f8a999f2f9e64d82456ed74cf5c[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Fri Apr 24 18:55:27 2026 +0100
+
+    j'ai travailler sur la fonctionnalite authentification
+
+[33mcommit 7632996292f4339b6dee52b70c824f3bf42a0f26[m
+Author: Ahinnoude <hinnoudeabdias@gmail.com>
+Date:   Fri Apr 24 15:47:00 2026 +0100
+
+    creation de la table Departement
+
+[33mcommit 3e30a5b54ee08096e0b41251ceeb50d21d503996[m
+Author: Junior SA <juniorsanni527@gmail.com>
+Date:   Fri Apr 24 14:09:52 2026 +0100
+
+    Interface des features : Departements & Finances
+
+[33mcommit 299ed69800c741150a298801da0685d7caea96de[m
+Author: euralde <julioassokpe@gmail.com>
+Date:   Fri Apr 24 13:26:09 2026 +0100
+
+    initialisation du projet

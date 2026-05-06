@@ -59,7 +59,7 @@ class offresController extends Controller
 
             DB::commit();
 
-            return redirect()->route('offres.show', $recrutement)->with('success', 'Recrutement crée avec succès');
+            return redirect()->route('offres.show', $recrutement)->with('success', 'Candidature enregistrée avec succès');
     }
 
 }

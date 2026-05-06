@@ -97,7 +97,7 @@
                                             onclick="openEditModal({{ $employee->id }})" 
                                             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
                                         <iconify-icon icon="solar:pen-2-linear" class="text-base"></iconify-icon>
-                                    </button>
+                                        </button>
                                         <form action="{{ route('employes.destroy', $employee->id) }}" method="POST" class="inline-block" onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer cet employé ? Cette action est irréversible.')">
                                             @csrf
                                             @method('DELETE')
@@ -108,6 +108,111 @@
                                     </div>
                                 </td>
                             </tr>
+                            <!-- MODAL Modification Employé -->
+                            <div id="editEmployeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+                                <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div>
+                                <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
+                                    id="editModalContainer">
+                                    <div class="flex justify-between items-center p-5 border-b border-gray-100">
+                                        <h3 class="text-lg font-semibold text-gray-900">Modifier l'employé</h3>
+                                        <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
+                                            <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+                                        </button>
+                                    </div>
+                                    
+                                    <form action="{{ route('employes.update', $employee->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="p-5 space-y-4">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
+                                                            class="text-red-500">*</span></label>
+                                                    <input type="text" name="firstname" value="{{ $employee->user->firstname }}"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                                        placeholder="Prénom">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
+                                                            class="text-red-500">*</span></label>
+                                                    <input type="text" name="lastname" value="{{ $employee->user->lastname }}"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                                                        placeholder="Nom">
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
+                                                    <input type="text" name="poste" value="{{ $employee->poste }}"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                                        placeholder="Ex: Développeur Front-end">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
+                                                    <select name="department_id" 
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                                                        <option value="">Choisir un département</option>
+                                                        @foreach($departements as $dep)
+                                                            <option value="{{ $dep->id }}"
+                                                                {{ $employee->department_id == $dep->id ? 'selected' : '' }}>
+                                                                {{ $dep->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                                    <input type="email" name="email" value="{{$employee->user->email}}"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                                        placeholder="prenom.nom@afroplume.com">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                                    <input type="tel" name="phone" value="{{ $employee->user->phone }}"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                                                        placeholder="+229 XX XX XX XX XX">
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Profil</label>
+                                                    <select name="profil" class="w-full border rounded p-2">
+                                                        <option value="">Choisir un profil</option>
+                                                        <option value="gerant" {{ $employee->user->profil == 'gerant' ? 'selected' : '' }}>Gérant</option>
+                                                        <option value="manager" {{ $employee->user->profil == 'manager' ? 'selected' : '' }}>Manager</option>
+                                                        <option value="employee" {{ $employee->user->profil == 'employee' ? 'selected' : '' }}>Employé</option>
+                                                        <option value="ambassadeur" {{ $employee->user->profil == 'ambassadeur' ? 'selected' : '' }}>Ambassadeur</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                                                    <select name="status" 
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                                                        <option value="actif">🟢 Actif</option>
+                                                        <option value="conge">🟡 En congé</option>
+                                                        <option value="teletravail">🔵 Télétravail</option>
+                                                        <option value="inactif">⚫ Inactif</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Compétences / Notes</label>
+                                                <textarea name="skills" rows="2"
+                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
+                                                    placeholder="React, Node.js, Gestion d'équipe...">{{$employee->skills}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
+                                            <button id="cancelEditModalBtn"
+                                                class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Mettre à jour</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -124,162 +229,58 @@
     <!-- MODAL Employé (Ajouter) -->
     <div id="employeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
         <div class="absolute inset-0 modal-backdrop" id="modalBackdrop"></div>
-        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
-            id="modalContainer">
+        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300" id="modalContainer">
             <div class="flex justify-between items-center p-5 border-b border-gray-100">
                 <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">Ajouter un employé</h3>
-                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
-                    <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+                <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
             
-                <form action="{{ route('employes.store') }}" method="POST">
+            <form action="{{ route('employes.store') }}" method="POST">
                 @csrf
-                    <div class="p-5 space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
-                                        class="text-red-500">*</span></label>
-                                <input type="text" name="firstname"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('firstname') border-red-500 @enderror" value="{{ old('firstname') }}"
-                                    placeholder="Prénom">
-                                    @error('firstname')
-                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
-                                        class="text-red-500">*</span></label>
-                                <input type="text" name="lastname"
-                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('lastname') border-red-500 @enderror" value="{{ old('lastname') }}"
-                                    placeholder="Nom">
-                                    @error('lastname')
-                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
-                                <input type="text" name="poste" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('poste') border-red-500 @enderror" value="{{ old('poste') }}"
-                                    placeholder="Ex: Développeur Front-end">
-                                    @error('poste')
-                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                                <select name="department_id" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                                    <option value="">Choisir un département</option>
-                                    @foreach($departements as $dep)
-                                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" name="email" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('email') border-red-500 @enderror" value="{{ old('email') }}"
-                                    placeholder="prenom.nom@afroplume.com">
-                                    @error('email')
-                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                                <input type="tel" name="phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('phone') border-red-500 @enderror" value="{{ old('phone') }}"
-                                    placeholder="+229 XX XX XX XX XX">
-                                    @error('phone')
-                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Profil</label>
-                                <select name="profil" class="w-full border rounded p-2">
-                                    <option value="">Choisir un profil</option>
-                                    <option value="gerant">Gérant</option>
-                                    <option value="manager">Manager</option>
-                                    <option value="employee">Employé</option>
-                                    <option value="ambassadeur">Ambassadeur</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Date d'embauche</label>
-                                <input type="date" name="hire_date" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('hire_date') border-red-500 @enderror" value="{{ old('hire_date') }}">
-                                @error('hire_date')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Compétences / Notes</label>
-                            <textarea name="skills" rows="2"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
-                                placeholder="React, Node.js, Gestion d'équipe..."></textarea>
-                        </div>
-                    </div>
-                    <div class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
-                        <button id="cancelModalBtn"
-                            class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
-                        <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Enregistrer</button>
-                    </div>
-                </form>
-        </div>
-    </div>
-
-    <!-- MODAL Modification Employé -->
-    <div id="editEmployeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-        <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div>
-        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
-            id="editModalContainer">
-            <div class="flex justify-between items-center p-5 border-b border-gray-100">
-                <h3 class="text-lg font-semibold text-gray-900">Modifier l'employé</h3>
-                <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
-                    <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
-                </button>
-            </div>
-            
-            <form action="{{ route('employes.update', $employee->id) }}" method="POST">
-                @csrf
-                @method('PATCH')
                 <div class="p-5 space-y-4">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="firstname" value="{{ $employee->user->firstname }}"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span class="text-red-500">*</span></label>
+                            <input type="text" name="firstname" id="firstname"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('firstname') border-red-500 @enderror" 
+                                value="{{ old('firstname') }}"
                                 placeholder="Prénom">
+                            @error('firstname')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="lastname" value="{{ $employee->user->lastname }}"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span class="text-red-500">*</span></label>
+                            <input type="text" name="lastname" id="lastname"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('lastname') border-red-500 @enderror" 
+                                value="{{ old('lastname') }}"
                                 placeholder="Nom">
+                            @error('lastname')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
-                            <input type="text" name="poste" value="{{ $employee->poste }}"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                            <input type="text" name="poste" id="poste" 
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('poste') border-red-500 @enderror" 
+                                value="{{ old('poste') }}"
                                 placeholder="Ex: Développeur Front-end">
+                            @error('poste')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                            <select name="department_id" 
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                            <select name="department_id" id="department_id" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
                                 <option value="">Choisir un département</option>
                                 @foreach($departements as $dep)
-                                    <option value="{{ $dep->id }}"
-                                        {{ $employee->department_id == $dep->id ? 'selected' : '' }}>
-                                        {{ $dep->name }}
-                                    </option>
+                                    <option value="{{ $dep->id }}" {{ old('department_id') == $dep->id ? 'selected' : '' }}>{{ $dep->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -287,69 +288,68 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input type="email" name="email" value="{{$employee->user->email}}"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                            <input type="email" name="email" id="email" 
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('email') border-red-500 @enderror" 
+                                value="{{ old('email') }}"
                                 placeholder="prenom.nom@afroplume.com">
+                            @error('email')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                            <input type="tel" name="phone" value="{{ $employee->user->phone }}"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                            <input type="tel" name="phone" id="phone" 
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('phone') border-red-500 @enderror" 
+                                value="{{ old('phone') }}"
                                 placeholder="+229 XX XX XX XX XX">
+                            @error('phone')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Profil</label>
-                            <select name="profil" class="w-full border rounded p-2">
+                            <select name="profil" id="profil" class="w-full border rounded p-2">
                                 <option value="">Choisir un profil</option>
-                                <option value="gerant">Gérant</option>
-                                <option value="manager">Manager</option>
-                                <option value="employee">Employé</option>
-                                <option value="ambassadeur">Ambassadeur</option>
+                                <option value="gerant" {{ old('profil') == 'gerant' ? 'selected' : '' }}>Gérant</option>
+                                <option value="manager" {{ old('profil') == 'manager' ? 'selected' : '' }}>Manager</option>
+                                <option value="employee" {{ old('profil') == 'employee' ? 'selected' : '' }}>Employé</option>
+                                <option value="ambassadeur" {{ old('profil') == 'ambassadeur' ? 'selected' : '' }}>Ambassadeur</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                            <select name="status" 
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                                <option value="actif">🟢 Actif</option>
-                                <option value="conge">🟡 En congé</option>
-                                <option value="teletravail">🔵 Télétravail</option>
-                                <option value="inactif">⚫ Inactif</option>
-                            </select>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date d'embauche</label>
+                            <input type="date" name="hire_date" id="hire_date" 
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('hire_date') border-red-500 @enderror" 
+                                value="{{ old('hire_date') }}">
+                            @error('hire_date')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Compétences / Notes</label>
-                        <textarea name="skills" rows="2"
+                        <textarea name="skills" id="skills" rows="2"
                             class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
-                            placeholder="React, Node.js, Gestion d'équipe...">{{$employee->skills}}</textarea>
+                            placeholder="React, Node.js, Gestion d'équipe...">{{ old('skills') }}</textarea>
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
-                    <button id="cancelEditModalBtn"
+                    <button type="button" id="cancelModalBtn"
                         class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
                     <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Mettre à jour</button>
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Enregistrer</button>
                 </div>
             </form>
         </div>
     </div>
 
+    
+
     @push('scripts')
         <script>
-            // GESTION DU MODAL - OUVERTURE ET FERMETURE UNIQUEMENT
-
-            // ========== MODAL DE MODIFICATION ==========
-            const editModal = document.getElementById('editEmployeeModal');
-            const editModalContainer = document.getElementById('editModalContainer');
-            const closeEditBtn = document.getElementById('closeEditModalBtn');
-            const cancelEditBtn = document.getElementById('cancelEditModalBtn');
-            const editBackdrop = document.getElementById('editModalBackdrop');
-            const openEditBtn = document.getElementById('openEditEmployeeModal');
-
-            // Récupération des éléments
+            // GESTION DU MODAL D'AJOUT
             const modal = document.getElementById('employeeModal');
             const modalContainer = document.getElementById('modalContainer');
             const openBtn = document.getElementById('openEmployeeModal');
@@ -357,70 +357,99 @@
             const cancelBtn = document.getElementById('cancelModalBtn');
             const backdrop = document.getElementById('modalBackdrop');
 
+            // Vérifier si les éléments existent
+            console.log('Modal:', modal);
+            console.log('Open button:', openBtn);
+
             // Fonction pour ouvrir le modal
             function openModal() {
+                if (!modal) return;
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
-                setTimeout(() => {
-                    modalContainer.classList.remove('scale-95', 'opacity-0');
-                    modalContainer.classList.add('scale-100', 'opacity-100');
-                }, 10);
+                // Forcer l'affichage
+                modal.style.display = 'flex';
+                
+                // Animation d'entrée
+                if (modalContainer) {
+                    modalContainer.style.transform = 'scale(1)';
+                    modalContainer.style.opacity = '1';
+                }
             }
 
             // Fonction pour fermer le modal
             function closeModal() {
-                modalContainer.classList.remove('scale-100', 'opacity-100');
-                modalContainer.classList.add('scale-95', 'opacity-0');
+                if (!modal) return;
+                // Animation de sortie
+                if (modalContainer) {
+                    modalContainer.style.transform = 'scale(0.95)';
+                    modalContainer.style.opacity = '0';
+                }
+                
                 setTimeout(() => {
                     modal.classList.add('hidden');
                     modal.classList.remove('flex');
+                    if (modal) modal.style.display = 'none';
                 }, 200);
             }
 
-            // Ouvrir le modal
-            function openEditModal(){
+            // Ouvrir le modal au clic
+            if (openBtn) {
+                openBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Opening modal...');
+                    openModal();
+                });
+            }
+
+            // Fermer le modal
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+            if (backdrop) backdrop.addEventListener('click', closeModal);
+
+            // Si erreurs de validation, ouvrir le modal automatiquement
+            @if ($errors->any())
+                document.addEventListener("DOMContentLoaded", function() {
+                    console.log('Errors detected, opening modal');
+                    openModal();
+                });
+            @endif
+
+            // ========== MODAL DE MODIFICATION ==========
+            const editModal = document.getElementById('editEmployeeModal');
+            const editModalContainer = document.getElementById('editModalContainer');
+            const closeEditBtn = document.getElementById('closeEditModalBtn');
+            const cancelEditBtn = document.getElementById('cancelEditModalBtn');
+            const editBackdrop = document.getElementById('editModalBackdrop');
+
+            function openEditModal(id) {
+                if (!editModal) return;
                 editModal.classList.remove('hidden');
                 editModal.classList.add('flex');
-                setTimeout(() => {
+                if (editModalContainer) {
                     editModalContainer.classList.remove('scale-95', 'opacity-0');
                     editModalContainer.classList.add('scale-100', 'opacity-100');
-                }, 10);
+                }
+                
+                // Ici vous devrez charger les données de l'employé via AJAX
+                console.log('Edit employee with ID:', id);
+                // TODO: Charger les données de l'employé et remplir le formulaire
             }
 
             function closeEditModal() {
+                if (!editModalContainer) return;
                 editModalContainer.classList.remove('scale-100', 'opacity-100');
                 editModalContainer.classList.add('scale-95', 'opacity-0');
                 setTimeout(() => {
-                    editModal.classList.add('hidden');
-                    editModal.classList.remove('flex');
+                    if (editModal) {
+                        editModal.classList.add('hidden');
+                        editModal.classList.remove('flex');
+                    }
                 }, 200);
             }
 
-            // Événements de fermeture du modal de modification
-            closeEditBtn.addEventListener('click', closeEditModal);
-            cancelEditBtn.addEventListener('click', closeEditModal);
-            editBackdrop.addEventListener('click', closeEditModal);
-
-            // Événements d'ouverture
-            openBtn.addEventListener('click', openModal);
-
-            // Événements de fermeture
-            closeBtn.addEventListener('click', closeModal);
-            cancelBtn.addEventListener('click', closeModal);
-            backdrop.addEventListener('click', closeModal);
-            
-            @if ($errors->any())
-                document.addEventListener("DOMContentLoaded", function () {
-                    const modal = document.getElementById('employeeModal');
-                    const container = document.getElementById('modalContainer');
-
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-
-                    container.classList.remove('scale-95', 'opacity-0');
-                    container.classList.add('scale-100', 'opacity-100');
-                });
-            @endif
+            if (closeEditBtn) closeEditBtn.addEventListener('click', closeEditModal);
+            if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditModal);
+            if (editBackdrop) editBackdrop.addEventListener('click', closeEditModal);
         </script>
 
         
@@ -430,29 +459,22 @@
                 background-color: rgba(0, 0, 0, 0.5);
                 backdrop-filter: blur(4px);
             }
-
-            .fade-in {
-                animation: fadeIn 0.2s ease;
+            
+            /* Styles par défaut pour le modal */
+            #employeeModal,
+            #editEmployeeModal {
+                display: none;
             }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(5px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+            
+            #employeeModal.flex,
+            #editEmployeeModal.flex {
+                display: flex !important;
             }
-
-            .status-badge {
-                transition: all 0.2s ease;
-            }
-
-            .avatar-placeholder {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            
+            /* Transition pour l'animation */
+            #modalContainer,
+            #editModalContainer {
+                transition: all 0.3s ease-in-out;
             }
         </style>
     @endpush

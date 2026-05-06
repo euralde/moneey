@@ -78,9 +78,11 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit"
-                class="flex items-center px-2 py-2 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400">
-                <iconify-icon icon="solar:logout-2-linear" class="text-lg mr-3"></iconify-icon>
-                Se déconnecter
+                class="flex items-center px-2 py-2 hover:text-rose-400 text-slate-400 group">
+                <iconify-icon icon="solar:logout-2-linear" class="text-lg mr-3 transition-transform duration-300 group-hover:rotate-12"></iconify-icon>
+                <span class="transition-all duration-300 group-hover:translate-x-1">
+                    Se déconnecter
+                </span>
             </button>
         </form>
     </div>

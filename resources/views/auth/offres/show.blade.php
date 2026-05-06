@@ -51,7 +51,11 @@
     <a href="{{ route('offres.index') }}" class="text-gray-400 hover:text-gray-600 transition"> 
         <iconify-icon icon="solar:arrow-left-linear" class="text-2xl"></iconify-icon> 
     </a>
-
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded-lg mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
         <!-- HEADER -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-6 shadow-lg mb-6">
             <div class="flex justify-between items-center flex-wrap gap-4">
@@ -103,11 +107,7 @@
 
         </div>
 
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded-lg mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
+        
         
         <div class="max-w-6xl mx-auto py-8 px-4">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

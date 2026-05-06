@@ -56,9 +56,7 @@ class DepartementController extends Controller
         }
 
         Departement::create($request->all());
-
-        Alert::success('Département ajouté avec succès');
-        return redirect()->route('departements.index');
+        return redirect()->route('departements.index')->with('success', 'Département ajouté avec succès');
     }
 
     //Function pour modifier un departement

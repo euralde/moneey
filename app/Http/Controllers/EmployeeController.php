@@ -116,10 +116,10 @@ class EmployeeController extends Controller
 
     // Dans EmployeeController.php
 
-    public function update(Request $request, Employee $employee, $id)
+    public function update(Request $request, $id)
     { 
         
-        $employee = Employee::find($id);
+        $employee = Employee::with('user')->findOrFail($id);
         DB::beginTransaction();
 
         
