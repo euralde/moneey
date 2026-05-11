@@ -137,7 +137,7 @@ Route::prefix('departements')->middleware('auth')->group(function () {
     Route::get('/create', [DepartementController::class, 'create'])->name('departements.create');
     Route::post('/store', [DepartementController::class, 'store'])->name('departements.store');
     Route::get('/edit/{id}', [DepartementController::class, 'edit'])->name('departements.edit');
-    Route::post('/update/{id}', [DepartementController::class, 'update'])->name('departements.update');
+    Route::put('/update/{id}', [DepartementController::class, 'update'])->name('departements.update');
     Route::delete('/delete/{id}', [DepartementController::class, 'destroy'])->name('departements.destroy');
     Route::get('/show/{id}', [DepartementController::class, 'show'])->name('departements.show');
     Route::get('/{id}/recrutements', [DepartementController::class, 'show'])->name('departements.recrutements');

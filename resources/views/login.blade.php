@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFRO'PLUME - Connexion</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <title>SMART'GEST - Connexion</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -58,7 +56,7 @@
                             <iconify-icon icon="solar:pen-2-bold" class="text-white text-2xl"></iconify-icon>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-white tracking-tight">AFRO'PLUME</h1>
+                            <h1 class="text-2xl font-bold text-white tracking-tight">SMART'GEST</h1>
                             <p class="text-blue-300 text-xs font-medium tracking-wide">Gestion intelligente</p>
                         </div>
                     </div>
@@ -102,7 +100,7 @@
 
                 <div class="mt-8 pt-8 border-t border-white/10">
                     <p class="text-slate-400 text-xs">
-                        &copy; {{ date('Y') }} AFRO'PLUME. Tous droits réservés.<br>
+                        &copy; {{ date('Y') }} SMART'GEST. Tous droits réservés.<br>
                         Protection de vos données garantie.
                     </p>
                 </div>
@@ -149,11 +147,7 @@
                                 <iconify-icon icon="solar:lock-password-linear" class="text-gray-400 text-lg"></iconify-icon>
                             </div>
                             <input type="password" name="password" id="password" placeholder="••••••••"
-                                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all @error('password') border-red-500 @enderror"
-                                >
-                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <iconify-icon icon="solar:eye-linear" class="text-gray-400 text-lg hover:text-gray-600 transition"></iconify-icon>
-                            </button>
+                                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all @error('password') border-red-500 @enderror">
                         </div>
                         @error('password')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -184,7 +178,7 @@
                 <div class="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <p class="text-xs text-gray-500 text-center">
                         🔐 <span class="font-medium">Compte de démonstration</span><br>
-                        <span class="text-gray-400">admin@afroplume.com / admin123</span>
+                        <span class="text-gray-400">admin@smart'gest.com / admin123</span>
                     </p>
                 </div>
 

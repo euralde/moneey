@@ -30,25 +30,44 @@
         <!-- Filtres et actions -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div class="flex flex-wrap gap-3">
-                <select id="statusFilter" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
-                    <option value="all">Tous les statuts</option>
-                    <option value="actif">🟢 Actif</option>
-                    <option value="conge">🟡 En congé</option>
-                    <option value="teletravail">🔵 Télétravail</option>
-                    <option value="inactif">⚫ Inactif</option>
-                </select>
-                <select id="departmentFilter" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
-                    <option value="">Tous les départements</option>
-                    @foreach($departements as $dep)
-                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
-                    @endforeach
-                </select>
-                <input type="text" id="searchEmployee" placeholder="Rechercher..."
-                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm w-48">
-                <button id="resetFilters"
-                    class="px-3 py-2 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg">
+                <form method="GET" action="{{ route('employes.index') }}" class="flex flex-wrap gap-3 items-center">
+                    <!-- Recherche -->
+                    <div class="flex items-center border border-gray-200 rounded-lg px-2">
+                        <input type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Rechercher..."
+                            class="px-2 py-2 text-sm w-48 focus:outline-none">
+
+                        <button type="submit" class="inline-flex items-center">
+                            <iconify-icon icon="mdi:magnify" class="text-blue-400 text-lg"></iconify-icon>
+                        </button>
+                    </div>
+
+                    <!-- Statut -->
+                    <select name="status" class="px-3 py-2 border rounded-lg text-sm bg-white">
+                        <option value="">Tous les statuts</option>
+                        <option value="actif" {{ request('status') == 'actif' ? 'selected' : '' }}>Actif</option>
+                        <option value="conge" {{ request('status') == 'conge' ? 'selected' : '' }}>En congé</option>
+                        <option value="teletravail" {{ request('status') == 'teletravail' ? 'selected' : '' }}>Télétravail</option>
+                        <option value="inactif" {{ request('status') == 'inactif' ? 'selected' : '' }}>Inactif</option>
+                    </select>
+
+                    <!-- Département -->
+                    <select name="department" class="px-3 py-2 border rounded-lg text-sm bg-white">
+                        <option value="">Tous les départements</option>
+                        @foreach($departements as $dep)
+                            <option value="{{ $dep->id }}"
+                                {{ request('department') == $dep->id ? 'selected' : '' }}>
+                                {{ $dep->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+                <a href="{{ route('employes.index') }}"
+                class="px-3 py-2 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg inline-flex items-center">
                     <iconify-icon icon="solar:refresh-linear" class="text-base"></iconify-icon>
-                </button>
+                </a>
             </div>
             <button id="openEmployeeModal"
                 class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
@@ -66,10 +85,10 @@
         <!-- Liste du personnel -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
+                <table class="min-w-[1400px] text-left">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            <th class="px-6 py-4">Employé</th>
+                            <th class="px-6 py-4 min-w-[250px]">Employé</th>
                             <th class="px-6 py-4">Poste</th>
                             <th class="px-6 py-4">Département</th>
                             <th class="px-6 py-4">Email</th>
@@ -83,7 +102,9 @@
                     <tbody style="text-align: center">
                         @foreach ($employees as $employee)
                             <tr>
-                                <td>{{ $employee->user->lastname.' '.$employee->user->firstname }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ $employee->user->lastname.' '.$employee->user->firstname }}
+                                </td>
                                 <td>{{ $employee->poste }}</td>
                                 <td>{{ $employee->departement->name }}</td>
                                 <td>{{ $employee->user->email }}</td>

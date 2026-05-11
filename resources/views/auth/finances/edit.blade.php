@@ -32,10 +32,10 @@
                 <select name="departement_id" class="w-full px-3 py-2 border rounded-lg" required>
                     <option value="">-- Sélectionnez un département --</option>
                     @foreach($departements as $dep)
-                          <option value="{{ $dep->id }}"
-                               {{ $dep->id == $transaction->departement_id ? 'selected' : '' }}>
-                               {{ $dep->name }}
-                          </option>                
+                        <option value="{{ $dep->id }}"
+                            {{ $dep->id == $transaction->departement_id ? 'selected' : '' }}>
+                            {{ $dep->name }}
+                        </option>                
                     @endforeach
                 </select>
             </div>

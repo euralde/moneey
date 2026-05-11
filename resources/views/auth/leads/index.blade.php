@@ -51,32 +51,103 @@
 
         <!-- Filtres -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div class="flex flex-wrap gap-3">
-                <select id="statusFilter" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
-                    <option value="all">Tous les statuts</option>
-                    <option value="nouveau">🆕 Nouveau</option>
-                    <option value="contacte">📞 Contacté</option>
-                    <option value="rdv">📅 Rendez-vous</option>
-                    <option value="negociation">🤝 Négociation</option>
-                    <option value="gagne">🏆 Gagné</option>
-                    <option value="perdu">❌ Perdu</option>
+            <form method="GET" action="{{ route('lead.index') }}"
+                class="flex flex-wrap gap-3">
+
+                <!-- Status -->
+                <select name="status"
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+
+                    <option value="">Tous les statuts</option>
+
+                    <option value="nouveau"
+                        {{ request('status') == 'nouveau' ? 'selected' : '' }}>
+                        🆕 Nouveau
+                    </option>
+
+                    <option value="contacte"
+                        {{ request('status') == 'contacte' ? 'selected' : '' }}>
+                        📞 Contacté
+                    </option>
+
+                    <option value="rdv"
+                        {{ request('status') == 'rdv' ? 'selected' : '' }}>
+                        📅 Rendez-vous
+                    </option>
+
+                    <option value="negociation"
+                        {{ request('status') == 'negociation' ? 'selected' : '' }}>
+                        🤝 Négociation
+                    </option>
+
+                    <option value="gagne"
+                        {{ request('status') == 'gagne' ? 'selected' : '' }}>
+                        🏆 Gagné
+                    </option>
+
+                    <option value="perdu"
+                        {{ request('status') == 'perdu' ? 'selected' : '' }}>
+                        ❌ Perdu
+                    </option>
                 </select>
-                <select id="sourceFilter" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
-                    <option value="all">Toutes sources</option>
-                    <option value="site_web">🌐 Site web</option>
-                    <option value="linkedin">🔗 LinkedIn</option>
-                    <option value="recommandation">⭐ Recommandation</option>
-                    <option value="salon">🎪 Salon</option>
-                    <option value="cold_call">📞 Cold call</option>
-                    <option value="partenaire">🤝 Partenaire</option>
+
+                <!-- Source -->
+                <select name="source"
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+
+                    <option value="">Toutes sources</option>
+
+                    <option value="site_web"
+                        {{ request('source') == 'site_web' ? 'selected' : '' }}>
+                        🌐 Site web
+                    </option>
+
+                    <option value="linkedin"
+                        {{ request('source') == 'linkedin' ? 'selected' : '' }}>
+                        🔗 LinkedIn
+                    </option>
+
+                    <option value="recommandation"
+                        {{ request('source') == 'recommandation' ? 'selected' : '' }}>
+                        ⭐ Recommandation
+                    </option>
+
+                    <option value="salon"
+                        {{ request('source') == 'salon' ? 'selected' : '' }}>
+                        🎪 Salon
+                    </option>
+
+                    <option value="cold_call"
+                        {{ request('source') == 'cold_all' ? 'selected' : '' }}>
+                        📞 Cold call
+                    </option>
+
+                    <option value="partenaire"
+                        {{ request('source') == 'partenaire' ? 'selected' : '' }}>
+                        🤝 Partenaire
+                    </option>
+
                 </select>
-                <input type="text" id="searchLead" placeholder="Rechercher..."
+
+                <!-- Recherche -->
+                <input type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Rechercher..."
                     class="px-3 py-2 border border-gray-200 rounded-lg text-sm w-48">
-                <button id="resetFilters"
-                    class="px-3 py-2 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg">
-                    <iconify-icon icon="solar:refresh-linear" class="text-base"></iconify-icon>
+
+                <!-- Bouton -->
+                <button type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                    Filtrer
                 </button>
-            </div>
+
+                <!-- Reset -->
+                <a href="{{ route('lead.index') }}"
+                    class="px-3 py-2 text-gray-500 border border-gray-200 rounded-lg">
+                    <iconify-icon icon="solar:refresh-linear"></iconify-icon>
+                </a>
+            </form>
         </div>
 
         @if(session('success'))

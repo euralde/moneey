@@ -12,8 +12,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-            $tasks = Task::all();
-        //liste des taches d'un utilisateur
+        $tasks = Task::where('user_id', auth()->id())->get();
         return view('auth.tasks.index', compact('tasks'));
     }
 
@@ -73,7 +72,13 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        // Vérifie que la tâche appartient à l'utilisateur connecté
+        if ($task->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $task->delete();
-        return back();
+
+        return back()->with('success', 'Tâche supprimée');
     }
 }

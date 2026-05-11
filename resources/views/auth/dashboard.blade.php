@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - AFRO\'PLUME')
+@section('title', 'Dashboard')
 @section('header-title', 'Tableau de bord')
 
 @section('content')
@@ -172,10 +172,12 @@
 {{-- ===================== SCRIPTS CHART ===================== --}}
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+
     const entrees = @json($entreesParMois);
     const sorties = @json($sortiesParMois);
 
-    new Chart(document.getElementById('cashflowChart'), {
+    new window.Chart(document.getElementById('cashflowChart'), {
         type: 'line',
         data: {
             labels: ['Jan', 'Fév', 'Mar'],
@@ -197,31 +199,20 @@
                     fill: true
                 }
             ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            }
         }
     });
 
-    new Chart(document.getElementById('expenseDonutChart'), {
+    new window.Chart(document.getElementById('expenseDonutChart'), {
         type: 'doughnut',
         data: {
             labels: ['Entrées', 'Sorties'],
             datasets: [{
                 data: [{{ $totalEntrees }}, {{ $totalSorties }}],
-                backgroundColor: ['#10b981', '#fb7185'],
-                borderWidth: 0
+                backgroundColor: ['#10b981', '#fb7185']
             }]
-        },
-        options: {
-            cutout: '70%',
-            plugins: {
-                legend: { display: false }
-            }
         }
     });
+
+});
 </script>
 @endpush

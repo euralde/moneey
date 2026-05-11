@@ -16,26 +16,58 @@ class RecrutementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $recrutements = Recrutement::with(['user', 'departement', 'candidatures'])->get();
+        $query = Recrutement::with(['user', 'departement', 'candidatures']);
+
+        // Filtre par statut
+        if ($request->filled('status') && $request->status != 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Recherche
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Département
+        if ($request->filled('department')) {
+
+            $query->whereHas('user', function ($q) use ($request) {
+
+                $q->where('department_id', $request->department);
+            });
+        }
+
+        $recrutements = $query->latest()->get();
+
+        // Statistiques
         $departements = Departement::all();
         $candidatures = Candidature::all();
 
-        // Statistiques
         $totalOffres = Recrutement::count();
         $totalOuvertes = Recrutement::where('status', 'ouverte')->count();
-        $totalencours = Recrutement::where('status', 'encours')->count();
-        $totalpourvue = Recrutement::where('status', 'pourvue')->count();
-        $totalfermée = Recrutement::where('status', 'fermee')->count();
-        
-        return view('auth.recrutements.index', compact('recrutements', 'candidatures', 
-            'departements', 
-            'totalOffres', 
-            'totalOuvertes', 
-            'totalencours', 
-            'totalpourvue', 
-            'totalfermée'));
+        $totalEncours = Recrutement::where('status', 'encours')->count();
+        $totalPourvue = Recrutement::where('status', 'pourvue')->count();
+        $totalFermee = Recrutement::where('status', 'fermee')->count();
+        $totalCandidatures = Candidature::count();
+
+        return view('auth.recrutements.index', compact(
+            'recrutements',
+            'departements',
+            'candidatures',
+            'totalOffres',
+            'totalOuvertes',
+            'totalEncours',
+            'totalPourvue',
+            'totalFermee',
+            'totalCandidatures'
+        ));
     }
 
     /**

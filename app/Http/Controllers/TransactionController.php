@@ -10,19 +10,50 @@ use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
-        $transactions = Transaction::orderBy('date', 'desc')->get();
-        $totalEntrees = Transaction::where('type', 'entree')->sum('montant');
-        $totalSorties = Transaction::where('type', 'sortie')->sum('montant');
+        $query = Transaction::with('departement');
+
+        // 🔎 Filtre type
+        if ($request->filled('type') && $request->type != 'all') {
+
+            $query->where('type', $request->type);
+        }
+
+        // 🏢 Filtre département
+        if ($request->filled('departement_id')) {
+
+            $query->where('departement_id', $request->departement_id);
+        }
+
+        // transactions filtrées
+        $transactions = $query
+            ->latest()
+            ->get();
+
+        // 📊 statistiques filtrées
+        $totalEntrees = $transactions
+            ->where('type', 'entree')
+            ->sum('montant');
+
+        $totalSorties = $transactions
+            ->where('type', 'sortie')
+            ->sum('montant');
+
         $solde = $totalEntrees - $totalSorties;
-        $transactions = Transaction::with('user', 'departement')->get();
+
         $departements = Departement::all();
 
-        
-        return view('auth.finances.transactions.index', compact('transactions','departements', 'totalEntrees', 'totalSorties', 'solde'));
+        return view('auth.finances.transactions.index', compact(
+            'transactions',
+            'departements',
+            'totalEntrees',
+            'totalSorties',
+            'solde'
+        ));
     }
 
+    
     public function create()
     {
         return view('auth.finances.transactions.create');

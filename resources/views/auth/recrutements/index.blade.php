@@ -16,34 +16,80 @@
             </div>
             <div class="bg-amber-50 rounded-xl border border-amber-100 p-4 text-center">
                 <p class="text-xs text-amber-600">En cours</p>
-                <p class="text-2xl font-bold text-amber-700" id="totalEnCours">{{ $totalencours }}</p>
+                <p class="text-2xl font-bold text-amber-700" id="totalEnCours">{{ $totalEncours }}</p>
             </div>
             <div class="bg-emerald-50 rounded-xl border border-emerald-100 p-4 text-center">
                 <p class="text-xs text-emerald-600">Pourvues</p>
-                <p class="text-2xl font-bold text-emerald-700" id="totalPourvues">{{ $totalpourvue }}</p>
+                <p class="text-2xl font-bold text-emerald-700" id="totalPourvues">{{ $totalPourvue }}</p>
             </div>
             <div class="bg-purple-50 rounded-xl border border-purple-100 p-4 text-center">
                 <p class="text-xs text-purple-600">Candidatures</p>
-                <p class="text-2xl font-bold text-purple-700" id="totalCandidatures"></p>
+                <p class="text-2xl font-bold text-purple-700" id="totalCandidatures">{{ $totalCandidatures }}</p>
             </div>
         </div>
 
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div class="flex gap-3">
-                <select id="statusFilter" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+            <form method="GET" action="{{ route('recrutement.index') }}"
+                class="flex flex-col sm:flex-row gap-3">
+
+                <!-- Filtre statut -->
+                <select name="status"
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+
                     <option value="all">Tous les statuts</option>
-                    <option value="ouverte">🟢 Ouverte</option>
-                    <option value="encours">🟡 En cours</option>
-                    <option value="pourvue">🔵 Pourvue</option>
-                    <option value="fermee">⚫ Fermée</option>
+
+                    <option value="ouverte"
+                        {{ request('status') == 'ouverte' ? 'selected' : '' }}>
+                        🟢 Ouverte
+                    </option>
+
+                    <option value="encours"
+                        {{ request('status') == 'encours' ? 'selected' : '' }}>
+                        🟡 En cours
+                    </option>
+
+                    <option value="pourvue"
+                        {{ request('status') == 'pourvue' ? 'selected' : '' }}>
+                        🔵 Pourvue
+                    </option>
+
+                    <option value="fermee"
+                        {{ request('status') == 'fermee' ? 'selected' : '' }}>
+                        ⚫ Fermée
+                    </option>
                 </select>
-                <input type="text" id="searchRecrutement" placeholder="Rechercher..."
-                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm w-48">
-                <button id="resetFilters"
-                    class="px-3 py-2 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg">
-                    <iconify-icon icon="solar:refresh-linear" class="text-base"></iconify-icon>
+
+                <!-- Département -->
+                    <select name="department" class="px-3 py-2 border rounded-lg text-sm bg-white">
+                        <option value="">Tous les départements</option>
+                        @foreach($departements as $dep)
+                            <option value="{{ $dep->id }}"
+                                {{ request('department') == $dep->id ? 'selected' : '' }}>
+                                {{ $dep->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    
+                <!-- Recherche -->
+                <input type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Rechercher..."
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm w-full sm:w-48">
+
+                <!-- Bouton rechercher -->
+                <button type="submit"
+                    class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                    Rechercher
                 </button>
-            </div>
+
+                <!-- Reset -->
+                <a href="{{ route('recrutement.index') }}"
+                    class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+                    Réinitialiser
+                </a>
+
+            </form>
             <a href="{{ route('recrutement.create') }}"
                 class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
                 <iconify-icon icon="solar:add-circle-linear" class="text-lg"></iconify-icon>

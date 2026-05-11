@@ -83,10 +83,7 @@ class DepartementController extends Controller
         }
 
         $departement->update($request->all());
-
-        Alert::success('Département modifié avec succès');
-
-        return redirect()->route('departements.index');
+        return redirect()->route('departements.index')->with('success', 'Département modifié avec succès');
     }
 
     //Function pour supprimer un departement
@@ -94,7 +91,6 @@ class DepartementController extends Controller
     {
         $departement = Departement::find($id);
         $departement->delete();
-        Alert::success('Département supprimé avec succès');
-        return redirect()->route('departements.index');
+        return redirect()->route('departements.index')->with('success', 'Département supprimé avec succès');
     }
 }

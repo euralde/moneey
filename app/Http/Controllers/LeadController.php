@@ -12,23 +12,79 @@ class LeadController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $leads = Lead::with('assignedTo')->latest()->get();
+        $query = Lead::with('assignedTo');
+
+        // 🔎 Recherche
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('name', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('company', 'like', "%$search%");
+            });
+        }
+
+        // 📌 Filtre status
+        if ($request->filled('status')) {
+
+            $query->where('status', $request->status);
+        }
+
+        // 🌐 Filtre source
+        if ($request->filled('source')) {
+
+            $query->where('source', $request->source);
+        }
+
+        // résultats filtrés
+        $leads = $query->latest()->get();
+
+        // 📊 statistiques filtrées
+        $totallead = $leads->count();
+
+        $totalnouveau = $leads
+            ->where('status', 'nouveau')
+            ->count();
+
+        $totalcontacte = $leads
+            ->where('status', 'contacte')
+            ->count();
+
+        $totalrdv = $leads
+            ->where('status', 'rdv')
+            ->count();
+
+        $totalnegocation = $leads
+            ->where('status', 'negociation')
+            ->count();
+
+        $totalgagne = $leads
+            ->where('status', 'gagne')
+            ->count();
+
+        $totalperdu = $leads
+            ->where('status', 'perdu')
+            ->count();
+
         $users = User::all();
 
-        // Statistiques
-        $totallead = Lead::count();
-        $totalnouveau = Lead::where('status', 'nouveau')->count();
-        $totalcontacte = Lead::where('status', 'contacte')->count();
-        $totalrdv = Lead::where('status', 'rdv')->count();
-        $totalnegocation = Lead::where('status', 'negocation')->count();
-        $totalgagne = Lead::where('status', 'gagne')->count();
-        $totalperdu = Lead::where('status', 'perdu')->count();
-
-        return view('auth.leads.index', compact('leads', 'users', 'totallead', 'totalnouveau', 'totalcontacte', 'totalrdv', 'totalnegocation', 'totalgagne', 'totalperdu'));
+        return view('auth.leads.index', compact(
+            'leads',
+            'users',
+            'totallead',
+            'totalnouveau',
+            'totalcontacte',
+            'totalrdv',
+            'totalnegocation',
+            'totalgagne',
+            'totalperdu'
+        ));
     }
-
     /**
      * Show the form for creating a new resource.
      */

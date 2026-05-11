@@ -52,7 +52,10 @@
                 <select name="departement_id" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
                     <option value="">Tous les départements</option>
                     @foreach($departements as $dep)
-                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
+                        <option value="{{ $dep->id }}"
+                            {{ request('departement_id') == $dep->id ? 'selected' : '' }}>
+                            {{ $dep->name }}
+                        </option>
                     @endforeach
                 </select>
                 <button type="submit" class="px-3 py-2 bg-blue-600 text-white rounded-lg">Filtrer</button>

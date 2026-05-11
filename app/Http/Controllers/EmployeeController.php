@@ -15,26 +15,69 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::with(['user', 'departement'])->get();
+        $query = Employee::with(['user', 'departement']);
+
+        // 🔎 Recherche
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->whereHas('user', function ($q) use ($search) {
+
+                $q->where('firstname', 'like', "%$search%")
+                ->orWhere('lastname', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%");
+            });
+        }
+
+        // 🟢 Statut
+        if ($request->filled('status')) {
+
+            $query->where('status', $request->status);
+        }
+
+        // 🏢 Département
+        if ($request->filled('department')) {
+
+            $query->whereHas('user', function ($q) use ($request) {
+
+                $q->where('department_id', $request->department);
+            });
+        }
+
+        // employés filtrés
+        $employees = $query->get();
+
+        // 📊 statistiques filtrées
+        $totalEmployes = $employees->count();
+
+        $totalActifs = $employees
+            ->where('status', 'actif')
+            ->count();
+
+        $totalConge = $employees
+            ->where('status', 'conge')
+            ->count();
+
+        $totalTeletravail = $employees
+            ->where('status', 'teletravail')
+            ->count();
+
+        $totalDepartements = $employees->count();
+
         $departements = Departement::all();
 
-        // Statistiques
-        $totalEmployes = Employee::count();
-        $totalActifs = Employee::where('status', 'actif')->count();
-        $totalConge = Employee::where('status', 'conge')->count();
-        $totalTeletravail = Employee::where('status', 'teletravail')->count();
-        $totalDepartements = Departement::count();
-
-        return view('auth.employes.index', compact('employees',
-            'departements', 
-            'totalEmployes', 
-            'totalActifs', 
-            'totalConge', 
-            'totalTeletravail', 
-            'totalDepartements'));
-
+        return view('auth.employes.index', compact(
+            'employees',
+            'departements',
+            'totalEmployes',
+            'totalActifs',
+            'totalConge',
+            'totalTeletravail',
+            'totalDepartements'
+        ));
     }
 
     /**

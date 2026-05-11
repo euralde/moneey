@@ -5,7 +5,7 @@
     class="fixed md:static inset-y-0 left-0 w-[260px] bg-slate-900 text-slate-300 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-200 flex-shrink-0"
     id="sidebar">
     <div class="flex flex-col justify-center h-20 px-6 border-b border-slate-800">
-        <span class="text-xl font-semibold tracking-tighter text-white">{{ env("APP_NAME") }}</span>
+        <span class="text-xl font-semibold tracking-tighter text-white">SMART 'GEST</span>
         <span class="text-xs text-slate-400 font-medium mt-0.5">Gestion intelligente</span>
     </div>
     <nav class="flex-1 overflow-y-auto py-6 space-y-1">

@@ -10,6 +10,8 @@
         </div>
         <form method="POST" action="{{ route('departements.update', $departement->id) }}">
             @csrf
+            @method('PUT')
+            
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
