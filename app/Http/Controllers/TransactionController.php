@@ -10,33 +10,79 @@ use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
-   public function index(Request $request)
+    public function index(Request $request)
     {
+        $user = auth()->user();
+
+        // récupérer le département du user connecté
+        $departmentId = optional($user->employee)->department_id;
+
+        // Base query
         $query = Transaction::with('departement');
 
-        // 🔎 Filtre type
-        if ($request->filled('type') && $request->type != 'all') {
+        /*
+        |--------------------------------------------------------------------------
+        | FILTRAGE PAR ROLE
+        |--------------------------------------------------------------------------
+        */
 
+        if ($user->profil === 'gerant') {
+
+            // 👔 Le gérant voit tout
+            // aucun filtre
+
+        } elseif ($user->profil === 'manager') {
+
+            // 👨‍💼 Le manager voit seulement son département
+            $query->where('department_id', $departmentId);
+
+        } else {
+
+            // 👤 Employé
+            $query->where('department_id', $departmentId);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTRES DU FORMULAIRE
+        |--------------------------------------------------------------------------
+        */
+
+        // filtre type
+        if ($request->type && $request->type !== 'all') {
             $query->where('type', $request->type);
         }
 
-        // 🏢 Filtre département
-        if ($request->filled('departement_id')) {
+        // filtre département
+        if ($request->departement_id) {
 
-            $query->where('departement_id', $request->departement_id);
+            // empêcher manager/employé de voir un autre département
+            if ($user->profil === 'gerant') {
+                $query->where('department_id', $request->departement_id);
+            }
         }
 
-        // transactions filtrées
+        /*
+        |--------------------------------------------------------------------------
+        | RECUPERATION DES TRANSACTIONS
+        |--------------------------------------------------------------------------
+        */
+
         $transactions = $query
             ->latest()
             ->get();
 
-        // 📊 statistiques filtrées
-        $totalEntrees = $transactions
+        /*
+        |--------------------------------------------------------------------------
+        | STATISTIQUES
+        |--------------------------------------------------------------------------
+        */
+
+        $totalEntrees = (clone $query)
             ->where('type', 'entree')
             ->sum('montant');
 
-        $totalSorties = $transactions
+        $totalSorties = (clone $query)
             ->where('type', 'sortie')
             ->sum('montant');
 
@@ -46,10 +92,10 @@ class TransactionController extends Controller
 
         return view('auth.finances.transactions.index', compact(
             'transactions',
-            'departements',
             'totalEntrees',
             'totalSorties',
-            'solde'
+            'solde',
+            'departements'
         ));
     }
 
@@ -64,29 +110,43 @@ class TransactionController extends Controller
         $request->validate([
             'label' => 'required|string|max:255',
             'type' => 'required',
-            'departement_id' => 'required',
+            'department_id' => auth()->user()->profil === 'gerant'
+                ? 'required'
+                : 'nullable',
             'montant' => 'required|numeric|min:1',
             'date' => 'required|date',
             'description' => 'nullable|string'
         ], [
             'label.required' => 'Veuillez remplir le champ label',
             'type.required' => 'Veuillez sélectionner un type',
-            'departement_id.required' => 'Veuillez sélectionner un département',
+            'department_id.required' => 'Veuillez sélectionner un département',
             'montant.required' => 'Veuillez saisir un montant',
             'montant.numeric' => 'Le montant doit être un nombre valide',
             'montant.min' => 'Le montant doit être au moins 1 FCFA',
             'date.required' => 'Veuillez sélectionner une date'
         ]);
 
+        $user = auth()->user();
+
+        $departmentId = optional($user->employee)->department_id;
+
+        // 👔 gérant peut choisir
+        if ($user->profil === 'gerant') {
+            $departementId = $request->department_id;
+        } else {
+            // 👨‍💼 manager/employé forcé à son département
+            $departementId = $departmentId;
+        }
+
         Transaction::create([
-                'user_id' => auth()->id(), // ← RÉCUPÈRE L'ID DE L'UTILISATEUR CONNECTÉ
-                'type' => $request->type ,
-                'label' => $request->label,
-                'departement_id' => $request->departement_id,
-                'montant' => $request->montant,
-                'date'=> $request->date,
-                'description' => $request->description,
-            ]);
+            'user_id' => auth()->id(),
+            'label' => $request->label,
+            'date' => $request->date,
+            'montant' => $request->montant,
+            'type' => $request->type,
+            'description' => $request->description,
+            'department_id' => $departementId,
+        ]);
         return redirect()->route('transactions.index')->with('success', 'Transaction ajoutée avec succès');
     }
 
@@ -117,7 +177,7 @@ class TransactionController extends Controller
         $transaction->update([
                 'type' => $request->type ,
                 'label' => $request->label,
-                'departement_id' => $request->departement_id,
+                'department_id' => $request->department_id,
                 'montant' => $request->montant,
                 'description' => $request->description,
             ]);

@@ -11,14 +11,14 @@ class Departement extends Model
 
     protected $fillable = ['name', 'description', 'manager_id'];
 
-    public function employes()
-    {
-        return $this->hasMany(Employee::class);
-    }
-
     public function manager()
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'department_id');
     }
 
     public function recrutements()

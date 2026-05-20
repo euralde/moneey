@@ -156,8 +156,33 @@ class LeadController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Lead $lead, $id)
+    public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'source' => 'required',
+            'status' => 'required',
+            'assigned_to' => 'required',
+            'notes' => 'nullable',
+        ], [
+            'name.required' => 'Nom est requis',
+            'name.unique' => 'Nom doit etre unique',
+            'email.required' => 'Email requis',
+            'phone.required' => 'Numéro de téléphone requis',
+            'assigned_to.required' => 'Utilisateur assigné requis',
+            'source.required' => 'Source requise',
+            'status.required' => 'requis',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('lead.index')
+                ->withErrors($validator, 'updateLead')
+                ->withInput()
+                ->with('edit_lead_id', $id);
+        }
+        
             $lead = Lead::findorfail($id);
             
                 // Mettre à jour l'utilisateur
@@ -178,7 +203,7 @@ class LeadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(Lead $lead, $id)
+    public function delete($id)
     {
         $lead = Lead::findOrFail($id);
         $lead->delete();

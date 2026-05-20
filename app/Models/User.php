@@ -41,7 +41,7 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class);
     }
 
-    public function managedDepartement()
+    public function managedDepartment()
     {
         return $this->hasOne(Departement::class, 'manager_id');
     }

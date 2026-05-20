@@ -189,14 +189,12 @@ Route::get('/users/attribuer/{id}', [UserController::class, 'attribuer'])->name(
 /*
 FEATURES : Dashboard
 */
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', fn() => view('auth.dashboard'))->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
 });
-
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard');
-
 /*
 FEATURES : FINANCES
 */

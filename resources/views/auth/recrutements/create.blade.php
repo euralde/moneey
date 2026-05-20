@@ -1,3 +1,7 @@
+@php
+    $user = auth()->user();
+    $departmentId = optional($user->employee)->department_id;
+@endphp
 @extends('layouts.app')
 
 @section('content')
@@ -39,14 +43,32 @@
 
                     <!-- Département -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                        <select id="department" name="department_id"
+                        @if($user->profil === 'gerant')
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
+                            <select id="department" name="department_id"
                             class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('department_id') border-red-500 @enderror" value="{{ old('department_id') }}">
-                            <option value="">Choisir un département</option>
-                                    @foreach($departements as $dep)
-                                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
-                                    @endforeach
-                        </select>
+                                <option value="">-- Sélectionnez un département --</option>
+                                @foreach($departements as $dep)
+                                    <option value="{{ $dep->id }}">
+                                        {{ $dep->name }}
+                                    </option>
+                                @endforeach
+                            </select>            
+                        @else
+                            {{-- Manager --}}
+                            <input type="hidden" name="department_id" value="{{ $departmentId }}">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Département
+                            </label>
+                            <div class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                                <div class="flex items-center gap-2">
+                                    <iconify-icon icon="solar:buildings-2-linear" class="text-lg text-blue-600"></iconify-icon>
+                                    <span>
+                                        {{ optional($user->employee->departement)->name ?? 'Aucun département' }}
+                                    </span>
+                                </div>
+                            </div>
+                        @endif
                         @error('department_id')
                             <span class="text-red-500 text-sm">{{ $message }}</span>
                         @enderror

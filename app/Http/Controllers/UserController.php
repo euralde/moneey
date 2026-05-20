@@ -37,8 +37,28 @@ class UserController extends Controller
         $credentails = $request->only('email','password');
         //Recherche sur la documentation de laravel notion de validation validator
         if (Auth::attempt($credentails)) {
-            //connexion reussie->redirection
-            return redirect()->route('dashboard');
+
+            $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            switch ($user->profil) {
+
+                case 'gerant':
+                    return redirect()->route('dashboard');
+
+                case 'manager':
+                    return redirect()->route('dashboard');
+
+                case 'employee':
+                    return redirect()->route('notes.index');
+
+                default:
+                    Auth::logout();
+                    return redirect('/')->withErrors([
+                        'email' => 'Profil non autorisé'
+                    ]);
+            }
         }
 
         //echec->retour avec message

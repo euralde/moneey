@@ -33,7 +33,7 @@
                     <option value="">-- Sélectionnez un département --</option>
                     @foreach($departements as $dep)
                         <option value="{{ $dep->id }}"
-                            {{ $dep->id == $transaction->departement_id ? 'selected' : '' }}>
+                            {{ $dep->id == $transaction->department_id ? 'selected' : '' }}>
                             {{ $dep->name }}
                         </option>                
                     @endforeach

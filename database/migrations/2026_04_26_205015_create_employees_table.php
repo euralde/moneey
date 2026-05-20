@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departements')->onDelete('cascade');
+            $table->foreignId('department_id')->nullable()->constrained('departements')->nullOnDelete();
             $table->enum('status', ['actif', 'conge', 'teletravail', 'inactif'])->default('actif');
             $table->date('hire_date')->nullable();
             $table->string('avatar_url')->nullable();

@@ -160,7 +160,7 @@
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-gray-50 border-b border-gray-200">
+                    <thead class="bg-gray-50 border-b border-gray-200" style="text-align: center">
                         <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             <th class="px-6 py-4">Client / Société</th>
                             <th class="px-6 py-4">Contact</th>
@@ -183,10 +183,10 @@
                             <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button type="button" 
-                                            onclick="openEditModal({{ $lead->id }})" 
+                                            onclick='openEditModal(@json($lead))'
                                             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
-                                        <iconify-icon icon="solar:pen-2-linear" class="text-base"></iconify-icon>
-                                    </button>
+                                            <iconify-icon icon="solar:pen-2-linear" class="text-base"></iconify-icon>
+                                        </button>
                                         <form action="{{ route('lead.delete', $lead->id) }}" method="POST" class="inline-block" onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer cet employé ? Cette action est irréversible.')">
                                             @csrf
                                             @method('DELETE')
@@ -197,98 +197,6 @@
                                     </div>
                                 </td>
                         </tr>
-                        <!-- MODAL de modification -->
-                        <div id="editleadModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"> 
-                            <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div> 
-                            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0" id="editModalContainer">
-                                <div class="flex justify-between items-center p-5 border-b">
-                                    <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">Nouveau lead</h3>
-                                    <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
-                                        <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
-                                    </button>
-                                </div>
-                                <div class="p-5 space-y-4">
-                                <form action="{{ route('lead.update', $lead->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom / Société <span
-                                                    class="text-red-500">*</span></label>
-                                            <input type="text" 
-                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('name') border-red-500 @enderror" value="{{ $lead->name }}" name="name"
-                                                placeholder="Ex: Dupont SARL">
-                                                @error('name')
-                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                @enderror
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                                <input type="email" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('email') border-red-500 @enderror" value="{{ $lead->email }}" name="email"
-                                                    placeholder="contact@email.com">
-                                                    @error('email')
-                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                    @enderror
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                                                <input type="tel" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('phone') border-red-500 @enderror" value="{{ $lead->phone }}" name="phone"
-                                                    placeholder="+229 XX XX XX XX XX">
-                                                    @error('phone')
-                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                    @enderror
-                                            </div>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Source</label>
-                                                <select  class="w-full px-3 py-2 border border-gray-200 rounded-lg"name="source">
-                                                    <option value="site_web">🌐 Site web</option>
-                                                    <option value="linkedin">🔗 LinkedIn</option>
-                                                    <option value="recommandation">⭐ Recommandation</option>
-                                                    <option value="salon">🎪 Salon professionnel</option>
-                                                    <option value="cold_call">📞 Cold call</option>
-                                                    <option value="partenaire">🤝 Partenaire</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                                                <select  class="w-full px-3 py-2 border border-gray-200 rounded-lg" name="status">
-                                                    <option value="nouveau">🆕 Nouveau</option>
-                                                    <option value="contacte">📞 Contacté</option>
-                                                    <option value="rdv">📅 Rendez-vous pris</option>
-                                                    <option value="negociation">🤝 Négociation</option>
-                                                    <option value="gagne">🏆 Gagné</option>
-                                                    <option value="perdu">❌ Perdu</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Assigné à</label>
-                                            <select name="assigned_to" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                                                <option value="">Choisir un employé</option>
-                                                @foreach($users as $user)
-                                                    <option value="{{ $user->id }}">
-                                                        {{ $lead->assigned_to == $user->id ? 'selected' : '' }}>
-                                                        {{ $user->lastname.' '.$user->firstname }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Notes / Commentaires</label>
-                                            <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none" value="{{ $lead->notes }}"
-                                                placeholder="Informations complémentaires..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-end gap-3 p-5 border-t bg-gray-50/50 rounded-b-xl">
-                                        <button id="cancelEditModalBtn"
-                                            class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
-                                        <button type="submit" 
-                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Enregistrer</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -389,9 +297,102 @@
         </div>
     </div>
 
-    
+    <!-- MODAL de modification -->
+                        <div id="editleadModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"> 
+                            <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div> 
+                            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0" id="editModalContainer">
+                                <div class="flex justify-between items-center p-5 border-b">
+                                    <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">Nouveau lead</h3>
+                                    <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
+                                        <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+                                    </button>
+                                </div>
+                                <div class="p-5 space-y-4">
+                                <form id="editLeadForm" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom / Société <span
+                                                    class="text-red-500">*</span></label>
+                                            <input type="text" 
+                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('name','updateLead') border-red-500 @enderror" name="name"
+                                                placeholder="Ex: Dupont SARL" id="edit_name">
+                                                @error('name','updateLead')
+                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                @enderror
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                                <input type="email" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('email','updateLead') border-red-500 @enderror" name="email"
+                                                    placeholder="contact@email.com" id="edit_email">
+                                                    @error('email','updateLead')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                                <input type="tel" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('phone','updateLead') border-red-500 @enderror" name="phone"
+                                                    placeholder="+229 XX XX XX XX XX" id="edit_phone">
+                                                    @error('phone','updateLead')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Source</label>
+                                                <select  class="w-full px-3 py-2 border border-gray-200 rounded-lg"name="source" id="edit_source">
+                                                    <option value="site_web">🌐 Site web</option>
+                                                    <option value="linkedin">🔗 LinkedIn</option>
+                                                    <option value="recommandation">⭐ Recommandation</option>
+                                                    <option value="salon">🎪 Salon</option>
+                                                    <option value="cold_call">📞 Cold call</option>
+                                                    <option value="partenaire">🤝 Partenaire</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                                                <select  class="w-full px-3 py-2 border border-gray-200 rounded-lg" name="status" id="edit_status">
+                                                    <option value="nouveau">🆕 Nouveau</option>
+                                                    <option value="contacte">📞 Contacté</option>
+                                                    <option value="rdv">📅 RDV</option>
+                                                    <option value="negociation">🤝 Négociation</option>
+                                                    <option value="gagne">🏆 Gagné</option>
+                                                    <option value="perdu">❌ Perdu</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Assigné à</label>
+                                            <select name="assigned_to" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('assigned_to','updateLead') border-red-500 @enderror" value="{{ old('assigned_to') }}" id="edit_assigned_to">
+                                                <option value="">Choisir un employé</option>
+                                                @foreach($users as $user)
+                                                    <option value="{{ $user->id }}">
+                                                        {{ $user->lastname.' '.$user->firstname }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('assigned_to','updateLead')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Notes / Commentaires</label>
+                                            <textarea name="notes" id="edit_notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
+                                                placeholder="Informations complémentaires..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end gap-3 p-5 border-t bg-gray-50/50 rounded-b-xl">
+                                        <button type="button" id="cancelEditModalBtn"
+                                            class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
+                                        <button type="submit" 
+                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Enregistrer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
-    
     @push('scripts')
         <script>
                 const leadModal = document.getElementById('leadModal');
@@ -427,36 +428,62 @@
             document.getElementById('modalBackdrop').addEventListener('click', closeLeadModal);
 
                 // ========== MODAL DE MODIFICATION ==========
-            const editModal = document.getElementById('editleadModal');
-            const editModalContainer = document.getElementById('editModalContainer');
-            const closeEditBtn = document.getElementById('closeEditModalBtn');
-            const cancelEditBtn = document.getElementById('cancelEditModalBtn');
-            const editBackdrop = document.getElementById('editModalBackdrop');
-            const openEditBtn = document.getElementById('openEditleadModal');
+                const editModal = document.getElementById('editleadModal');
+                const editModalContainer = document.getElementById('editModalContainer');
+                const closeEditBtn = document.getElementById('closeEditModalBtn');
+                const cancelEditBtn = document.getElementById('cancelEditModalBtn');
+                const editBackdrop = document.getElementById('editModalBackdrop');
 
-            // Ouvrir le modal
-            function openEditModal(){
-                editModal.classList.remove('hidden');
-                editModal.classList.add('flex');
-                setTimeout(() => {
-                    editModalContainer.classList.remove('scale-95', 'opacity-0');
-                    editModalContainer.classList.add('scale-100', 'opacity-100');
-                }, 10);
-            }
+                // OUVRIR MODAL
+                function openEditModal(lead) {
+                    let form = document.getElementById('editLeadForm');
 
-            function closeEditModal() {
-                editModalContainer.classList.remove('scale-100', 'opacity-100');
-                editModalContainer.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    editModal.classList.add('hidden');
-                    editModal.classList.remove('flex');
-                }, 200);
-            }
+                    form.action = `/lead/update/${lead.id}`;
 
-            // Événements de fermeture du modal de modification
-            closeEditBtn.addEventListener('click', closeEditModal);
-            cancelEditBtn.addEventListener('click', closeEditModal);
-            editBackdrop.addEventListener('click', closeEditModal);
+                    document.getElementById('edit_name').value = lead.name ?? '';
+                    document.getElementById('edit_email').value = lead.email ?? '';
+                    document.getElementById('edit_phone').value = lead.phone ?? '';
+                    document.getElementById('edit_source').value = lead.source ?? '';
+                    document.getElementById('edit_status').value = lead.status ?? '';
+                    document.getElementById('edit_assigned_to').value = lead.assigned_to ?? '';
+                    document.getElementById('edit_notes').value = lead.notes ?? '';
+
+                    // afficher modal
+                    editModal.classList.remove('hidden');
+                    editModal.classList.add('flex');
+                    setTimeout(() => {
+                        editModalContainer.classList.remove(
+                            'scale-95',
+                            'opacity-0'
+                        );
+                        editModalContainer.classList.add(
+                            'scale-100',
+                            'opacity-100'
+                        );
+                    }, 10);
+                }
+
+                // FERMER
+                function closeEditModal() {
+                    editModalContainer.classList.remove(
+                        'scale-100',
+                        'opacity-100'
+                    );
+
+                    editModalContainer.classList.add(
+                        'scale-95',
+                        'opacity-0'
+                    );
+                    setTimeout(() => {
+                        editModal.classList.add('hidden');
+                        editModal.classList.remove('flex');
+                    }, 200);
+                }
+
+                // EVENTS
+                if (closeEditBtn) closeEditBtn.addEventListener('click',closeEditModal);
+                if (cancelEditBtn) cancelEditBtn.addEventListener('click',closeEditModal);
+                if (editBackdrop) editBackdrop.addEventListener('click',closeEditModal);
         </script>
 
         <script>
@@ -470,6 +497,18 @@
 
                     container.classList.remove('scale-95', 'opacity-0');
                     container.classList.add('scale-100', 'opacity-100');
+                });
+            @endif
+
+            @if(session('edit_lead_id'))
+                document.addEventListener('DOMContentLoaded', function () {
+                    const leads = @json($leads);
+                    const lead = leads.find(
+                        lea => lea.id == {{ session('edit_lead_id') }}
+                    );
+                    if (lead) {
+                        openEditModal(lead);
+                    }
                 });
             @endif
         </script>

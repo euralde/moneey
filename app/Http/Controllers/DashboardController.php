@@ -4,39 +4,132 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Task;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // 💰 Totaux
-        $totalEntrees = Transaction::where('type', 'entree')->sum('montant');
-        $totalSorties = Transaction::where('type', 'sortie')->sum('montant');
+        $user = auth()->user();
+
+        // =========================
+        // 🔵 GÉRANT (users uniquement)
+        // =========================
+        if ($user->profil === 'gerant') {
+
+            $totalEntrees = Transaction::where('type', 'entree')->sum('montant');
+            $totalSorties = Transaction::where('type', 'sortie')->sum('montant');
+
+            $tachesUrgentes = Task::where('status', 'a-faire')
+                ->where('priority', 'urgent')
+                ->count();
+
+            $transactions = Transaction::select(
+                    DB::raw("DATE(CONVERT_TZ(created_at, '+00:00', '+01:00')) as jour"),
+                    'type',
+                    DB::raw('SUM(montant) as total')
+                )
+                ->groupBy('jour', 'type')
+                ->orderBy('jour')
+                ->get();
+
+            $jours = $transactions
+                ->pluck('jour')
+                ->unique()
+                ->values();
+
+            $entreesParJour = [];
+            $sortiesParJour = [];
+
+            foreach ($jours as $jour) {
+
+                $entree = $transactions
+                    ->where('jour', $jour)
+                    ->where('type', 'entree')
+                    ->first();
+
+                $sortie = $transactions
+                    ->where('jour', $jour)
+                    ->where('type', 'sortie')
+                    ->first();
+
+                $entreesParJour[] = $entree ? $entree->total : 0;
+
+                $sortiesParJour[] = $sortie ? $sortie->total : 0;
+            }
+        }
+
+        // =========================
+        // 🟢 EMPLOYÉ / MANAGER
+        // =========================
+        else {
+
+            $employe = $user->employee;
+
+            if (!$employe) {
+                abort(403);
+            }
+
+            $departmentId = $employe->department_id;
+
+            $totalEntrees = Transaction::where('type', 'entree')
+                ->where('department_id', $departmentId)
+                ->sum('montant');
+
+            $totalSorties = Transaction::where('type', 'sortie')
+                ->where('department_id', $departmentId)
+                ->sum('montant');
+
+            $tachesUrgentes = Task::where('status', 'a-faire')
+                ->where('priority', 'urgente')
+                ->count();
+
+            $transactions = Transaction::select(
+                    DB::raw("DATE(CONVERT_TZ(created_at, '+00:00', '+01:00')) as jour"),
+                    'type',
+                    DB::raw('SUM(montant) as total')
+                )
+                ->where('department_id', $departmentId)
+                ->groupBy('jour', 'type')
+                ->orderBy('jour')
+                ->get();
+
+            $jours = $transactions
+                ->pluck('jour')
+                ->unique()
+                ->values();
+
+            $entreesParJour = [];
+            $sortiesParJour = [];
+
+            foreach ($jours as $jour) {
+
+                $entree = $transactions
+                    ->where('jour', $jour)
+                    ->where('type', 'entree')
+                    ->first();
+
+                $sortie = $transactions
+                    ->where('jour', $jour)
+                    ->where('type', 'sortie')
+                    ->first();
+
+                $entreesParJour[] = $entree ? $entree->total : 0;
+
+                $sortiesParJour[] = $sortie ? $sortie->total : 0;
+            }
+        }
+
         $tresorerie = $totalEntrees - $totalSorties;
-
-        // ⚡ Tâches urgentes
-        $tachesUrgentes = Task::where('status', 'pending')
-            ->where('priority', 'high')
-            ->count();
-
-        // 📊 Graph (3 derniers mois)
-        $entreesParMois = Transaction::selectRaw('MONTH(date) as mois, SUM(montant) as total')
-            ->where('type', 'entree')
-            ->groupBy('mois')
-            ->pluck('total');
-
-        $sortiesParMois = Transaction::selectRaw('MONTH(date) as mois, SUM(montant) as total')
-            ->where('type', 'sortie')
-            ->groupBy('mois')
-            ->pluck('total');
 
         return view('auth.dashboard', compact(
             'totalEntrees',
             'totalSorties',
             'tresorerie',
             'tachesUrgentes',
-            'entreesParMois',
-            'sortiesParMois'
+            'entreesParJour',
+            'sortiesParJour',
+            'jours'
         ));
     }
 }

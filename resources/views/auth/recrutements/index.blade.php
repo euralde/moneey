@@ -60,6 +60,7 @@
                 </select>
 
                 <!-- Département -->
+                @if(auth()->user()->profil === 'gerant')
                     <select name="department" class="px-3 py-2 border rounded-lg text-sm bg-white">
                         <option value="">Tous les départements</option>
                         @foreach($departements as $dep)
@@ -69,7 +70,8 @@
                             </option>
                         @endforeach
                     </select>
-                    
+                @endif
+
                 <!-- Recherche -->
                 <input type="text"
                     name="search"
@@ -90,6 +92,13 @@
                 </a>
 
             </form>
+            @if(auth()->user()->profil === 'gerant')
+            <a href="{{ route('offres.index') }}"
+                class="text-blue-600 hover:bg-blue-50 p-1.5 rounded"
+                title="Voir toutes les offres">
+                <iconify-icon icon="solar:eye-linear" class="text-base"></iconify-icon>
+            </a>
+            @endif
             <a href="{{ route('recrutement.create') }}"
                 class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
                 <iconify-icon icon="solar:add-circle-linear" class="text-lg"></iconify-icon>
@@ -110,7 +119,9 @@
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             <th class="px-6 py-4">Poste</th>
+                            @if(auth()->user()->profil === 'gerant')
                             <th class="px-6 py-4">Département</th>
+                            @endif
                             <th class="px-6 py-4">Localisation</th>
                             <th class="px-6 py-4">Statut</th>
                             <th class="px-6 py-4">Date limite</th>
@@ -122,17 +133,15 @@
                         @foreach ($recrutements as $recrutement)
                             <tr>
                                 <td>{{ $recrutement->title }}</td>
-                                <td>{{ $recrutement->departement->name }}</td>
+                                @if(auth()->user()->profil === 'gerant')
+                                    <td class="px-6 py-4">
+                                        {{ $recrutement->departement->name }}
+                                    </td>
+                                @endif
                                 <td>{{ $recrutement->location }}</td>
                                 <td>{{ $recrutement->status }}</td>
                                 <td>{{ $recrutement->deadline }}</td>
-                                <td>
-                                    @forelse($recrutement->candidatures as $candidature)
-                                        <div>{{ $candidature->count() }}</div>
-                                    @empty
-                                        <span>Aucune candidature</span>
-                                    @endforelse
-                                </td>
+                                <td>{{ $recrutement->candidatures->count() }}</td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <a href="{{ route('recrutement.show', $recrutement->id) }}"

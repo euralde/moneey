@@ -31,6 +31,7 @@
                             <th class="px-6 py-4">Nom</th>
                             <th class="px-6 py-4">Description</th>
                             <th class="px-6 py-4">Statut</th>
+                            <th class="px-6 py-4">Manager</th>
                             <th class="px-6 py-4 text-center">Actions</th>
                         </tr>
                     </thead>
@@ -43,6 +44,11 @@
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">
                                         {{ $departement->status == 'actif' ? 'Actif' : 'Inactif'}}
                                     </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-500 max-w-xs truncate">
+                                    {{ $departement->manager
+                                        ? $departement->manager->firstname . ' ' . $departement->manager->lastname
+                                        : 'Aucun manager' }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">

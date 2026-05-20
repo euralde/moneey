@@ -17,7 +17,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Employee::with(['user', 'departement']);
+        $query = Employee::with(['user','user.managedDepartment', 'departement']);
 
         // 🔎 Recherche
         if ($request->filled('search')) {
@@ -32,25 +32,22 @@ class EmployeeController extends Controller
             });
         }
 
-        // 🟢 Statut
+        // Statut
         if ($request->filled('status')) {
 
             $query->where('status', $request->status);
         }
 
-        // 🏢 Département
+        // Département
         if ($request->filled('department')) {
 
-            $query->whereHas('user', function ($q) use ($request) {
-
-                $q->where('department_id', $request->department);
-            });
+            $query->where('department_id', $request->department);
         }
 
         // employés filtrés
         $employees = $query->get();
 
-        // 📊 statistiques filtrées
+        // statistiques filtrées
         $totalEmployes = $employees->count();
 
         $totalActifs = $employees
@@ -65,7 +62,7 @@ class EmployeeController extends Controller
             ->where('status', 'teletravail')
             ->count();
 
-        $totalDepartements = $employees->count();
+        $totalDepartements = Departement::count();
 
         $departements = Departement::all();
 
@@ -98,7 +95,9 @@ class EmployeeController extends Controller
             'lastname' => 'required',
             'firstname' => 'required',
             'email' => 'required|email|unique:users',
-            'department_id' => 'required',
+            'department_id' => $request->profil === 'manager'
+            ? 'nullable'
+            : 'required',
             'hire_date' => 'required',
             'poste' => 'required',
             'phone' => 'required',
@@ -120,7 +119,7 @@ class EmployeeController extends Controller
 
         DB::beginTransaction();
 
-            // 1️⃣ USER
+            // USER
             $user = User::create([
                 'lastname' => $request->lastname,
                 'firstname' => $request->firstname,
@@ -130,10 +129,12 @@ class EmployeeController extends Controller
                 'password' => Hash::make($request->email), // temporaire
             ]);
 
-            // 2️⃣ EMPLOYEE (LIÉ AU USER 🔥)
+            // EMPLOYEE (LIÉ AU USER 🔥)
             Employee::create([
                 'user_id' => $user->id,
-                'department_id' => $request->department_id,
+                'department_id' => $request->profil === 'manager'
+                        ? null
+                        : $request->department_id,
                 'status' => 'actif',
                 'hire_date' => $request->hire_date,
                 'poste' => $request->poste,
@@ -161,26 +162,59 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id)
     { 
+        $employee = Employee::with('user')->findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'lastname' => 'required',
+            'firstname' => 'required',
+            'email' => 'required|email|unique:users,email,' . $employee->user->id,
+            'department_id' => $request->profil === 'manager'
+            ? 'nullable'
+            : 'required',
+            'hire_date' => 'required',
+            'poste' => 'required',
+            'phone' => 'required',
+        ], [
+            'lastname.required' => 'Nom est requis',
+            'firstname.required' => 'Prénom est requis',
+            'email.required' => 'Email requis',
+            'department_id.required' => 'Département requis',
+            'poste.required' => 'Poste requis',
+            'phone.required' => 'Numéro de téléphone requis',
+            'hire_date.required' => 'Date d\'embauche requis',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('employes.index')
+                ->withErrors($validator, 'updateEmployee')
+                ->withInput()
+                ->with('edit_employee_id', $id);
+        }
         
         $employee = Employee::with('user')->findOrFail($id);
         DB::beginTransaction();
 
-        
             // Mettre à jour l'utilisateur
-            $employee->user->update([
+            $dataUser = [
                 'lastname' => $request->lastname,
                 'firstname' => $request->firstname,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'profil' => $request->profil,
-                'password' => Hash::make($request->password), // temporaire
-            ]);
+            ];
+
+            // Modifier le mot de passe seulement si fourni
+            if ($request->filled('password')) {
+                $dataUser['password'] = Hash::make($request->password);
+            }
+
+            $employee->user->update($dataUser);
 
             // Mettre à jour l'employé
             $employee->update([
                 'department_id' => $request->department_id,
                 'status' => $request->status,
                 'poste' => $request->poste,
+                'hire_date' => $request->hire_date,
                 'skills' => $request->skills,
             ]);
 

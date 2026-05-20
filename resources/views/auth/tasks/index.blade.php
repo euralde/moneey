@@ -226,7 +226,17 @@
                             <div onclick="openTaskDetail(${task.id})" class="cursor-pointer mb-1.5 p-1.5 rounded-lg ${priority.light} hover:shadow-sm transition-all">
                                 <div class="flex items-center gap-1.5">
                                     <div class="w-2 h-2 rounded-full ${priority.bg}"></div>
-                                    <span class="text-xs font-medium ${priority.text} truncate flex-1">${escapeHtml(task.title)}</span>
+                                    <div class="flex flex-col flex-1">
+                                        <span class="text-xs font-medium ${priority.text} truncate">
+                                            ${escapeHtml(task.title)}
+                                        </span>
+
+                                        ${task.user? `
+                                            <span class="text-[10px] text-gray-500 truncate">
+                                                👤 ${escapeHtml(task.user.firstname + ' ' + task.user.lastname)}
+                                            </span>
+                                        ` : ''}
+                                    </div>
                                 </div>
                             </div>
                             `;
@@ -257,7 +267,7 @@
                 document.getElementById('deleteForm').action = `/tasks/${task.id}`;
 
                 const priority = priorityConfig[task.priority] || priorityConfig.moyenne;
-                const dateObj = new Date(task.date);
+                const dateObj = new Date(task.start);
                 const formattedDate = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
                 document.getElementById('detailTitle').innerHTML = `
@@ -279,6 +289,10 @@
                                                                                             <div class="pt-2 border-t border-gray-100">
                                                                                                 <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">Description</label>
                                                                                                 <p class="text-sm text-gray-700 mt-1 leading-relaxed">${escapeHtml(task.description) || 'Aucune description'}</p>
+                                                                                            </div>
+                                                                                            <div class="pt-2 border-t border-gray-100">
+                                                                                                <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">Auteur</label>
+                                                                                                <p class="text-sm text-gray-700 mt-1 leading-relaxed">👤 ${escapeHtml(task.user.firstname + ' ' + task.user.lastname) || 'Aucun auteur'}</p>
                                                                                             </div>
                                                                                         </div>
                                                                                     `;

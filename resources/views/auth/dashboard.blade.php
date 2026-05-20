@@ -172,47 +172,63 @@
 {{-- ===================== SCRIPTS CHART ===================== --}}
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        const jours = @json($jours);
+        const entrees = @json($entreesParJour);
+        const sorties = @json($sortiesParJour);
+        const labels = jours.map(jour => {
+            return new Date(jour).toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        });
 
-    const entrees = @json($entreesParMois);
-    const sorties = @json($sortiesParMois);
-
-    new window.Chart(document.getElementById('cashflowChart'), {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Fév', 'Mar'],
-            datasets: [
-                {
-                    label: 'Entrées',
-                    data: entrees,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16,185,129,0.05)',
-                    tension: 0.4,
-                    fill: true
+        new window.Chart(document.getElementById('cashflowChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Entrées',
+                        data: entrees,
+                        backgroundColor: '#10b981',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Sorties',
+                        data: sorties,
+                        backgroundColor: '#fb7185',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
                 },
-                {
-                    label: 'Sorties',
-                    data: sorties,
-                    borderColor: '#fb7185',
-                    backgroundColor: 'rgba(251,113,133,0.05)',
-                    tension: 0.4,
-                    fill: true
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            ]
-        }
-    });
+            }
+        });
 
-    new window.Chart(document.getElementById('expenseDonutChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Entrées', 'Sorties'],
-            datasets: [{
-                data: [{{ $totalEntrees }}, {{ $totalSorties }}],
-                backgroundColor: ['#10b981', '#fb7185']
-            }]
-        }
-    });
+        new window.Chart(document.getElementById('expenseDonutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Entrées', 'Sorties'],
+                datasets: [{
+                    data: [{{ $totalEntrees }}, {{ $totalSorties }}],
+                    backgroundColor: ['#10b981', '#fb7185']
+                }]
+            }
+        });
 
-});
+    });
 </script>
 @endpush

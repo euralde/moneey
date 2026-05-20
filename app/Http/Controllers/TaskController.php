@@ -12,7 +12,43 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::where('user_id', auth()->id())->get();
+        $user = auth()->user();
+
+        $role = strtolower(trim($user->profil));
+
+        $departmentId = optional($user->employee)->department_id;
+
+        if ($role === 'gerant') {
+
+            // 👔 Gérant = toutes les tâches
+            $tasks = Task::with('user.employee')
+                ->orderBy('start', 'asc')
+                ->get();
+
+        } elseif ($role === 'manager') {
+
+            // 👨‍💼 Manager = ses tâches + celles du département
+            $tasks = Task::with('user.employee')
+                ->where(function ($query) use ($user, $departmentId) {
+
+                    $query->where('user_id', $user->id)
+
+                        ->orWhereHas('user.employee', function ($q) use ($departmentId) {
+                            $q->where('department_id', $departmentId);
+                        });
+                })
+                ->orderBy('start', 'asc')
+                ->get();
+
+        } else {
+
+            // 👤 Employé = ses tâches uniquement
+            $tasks = Task::with('user.employee')
+                ->where('user_id', $user->id)
+                ->orderBy('start', 'asc')
+                ->get();
+        }
+
         return view('auth.tasks.index', compact('tasks'));
     }
 
@@ -72,8 +108,31 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        // Vérifie que la tâche appartient à l'utilisateur connecté
-        if ($task->user_id !== auth()->id()) {
+        $user = auth()->user();
+
+        // 👔 gérant peut tout supprimer
+        if ($user->role === 'gerant') {
+            $task->delete();
+            return back()->with('success', 'Tâche supprimée');
+        }
+
+        // 👨‍💼 manager : ses tâches + département
+        if ($user->role === 'manager') {
+
+            $departmentId = optional($user->employee)->department_id;
+
+            $sameDepartment = optional($task->user->employee)->department_id === $departmentId;
+
+            if ($task->user_id === $user->id || $sameDepartment) {
+                $task->delete();
+                return back()->with('success', 'Tâche supprimée');
+            }
+
+            abort(403);
+        }
+
+        // 👤 employé : uniquement ses tâches
+        if ($task->user_id !== $user->id) {
             abort(403);
         }
 

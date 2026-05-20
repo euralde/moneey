@@ -9,20 +9,21 @@
         <span class="text-xs text-slate-400 font-medium mt-0.5">Gestion intelligente</span>
     </div>
     <nav class="flex-1 overflow-y-auto py-6 space-y-1">
+        @if(in_array($profil, ['gerant', 'manager']))
         <a href="{{ route('dashboard') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('dashboard') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
             <iconify-icon icon="solar:widget-2-linear"
                 class="text-lg mr-3 {{ request()->routeIs('dashboard') ? 'text-blue-400' : '' }}"></iconify-icon>
             <span class="font-medium">Dashboard</span>
         </a>
+        @endif
+
         @if(auth()->user()->profil === 'gerant')
         <a href="{{ route('employes.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('employes.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
             <iconify-icon icon="solar:users-group-two-rounded-linear" class="text-lg mr-3"></iconify-icon>
             <span>Utilisateur</span>
         </a>
-        
-
         <a href="{{ route('departements.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('departements.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
             <iconify-icon icon="solar:buildings-2-linear" class="text-lg mr-3"></iconify-icon>
@@ -35,6 +36,7 @@
             <iconify-icon icon="solar:notes-linear" class="text-lg mr-3"></iconify-icon>
             <span>Notes</span>
         </a>
+        
         @if(in_array($profil, ['gerant', 'manager']))
         <a href="{{ route('transactions.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('transactions.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">

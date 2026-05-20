@@ -15,10 +15,19 @@
             </div>
             <span class="font-medium text-gray-700 hidden sm:block">{{ auth()->user()->firstname ." ". auth()->user()->lastname?? 'Non defini' }}</span>
         </div>
-        <div class="flex items-center space-x-3 pl-4 border-l border-gray-200">
+        <div class="flex items-center space-x-2 pl-4 border-l border-gray-200">
+            <!-- Profil -->
             <span class="font-medium text-white bg-red-600 border border-red-300 px-2 py-1 rounded-full text-xs">
-                {{ ucfirst(auth()->user()->profil?? '??') }}
+                {{ ucfirst(auth()->user()->profil ?? '??') }}
             </span>
+        </div>
+        <div class="flex items-center space-x-2 pl-4 border-l border-gray-200">
+            <!-- Département -->
+            @if(auth()->user()->employee?->departement)
+                <span class="font-medium text-blue-700 bg-blue-100 border border-blue-200 px-2 py-1 rounded-full text-xs">
+                    {{ auth()->user()->employee->departement->name }}
+                </span>
+            @endif
         </div>
     </div>
 </header>

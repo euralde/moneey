@@ -9,7 +9,7 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'type', 'label', 'departement_id', 'montant', 'date', 'description'];
+    protected $fillable = ['user_id', 'type', 'label', 'department_id', 'montant', 'date', 'description'];
 
     protected $casts = [
         'date' => 'date',
@@ -23,6 +23,6 @@ class Transaction extends Model
 
     public function departement()
     {
-        return $this->belongsTo(Departement::class, 'departement_id');
+        return $this->belongsTo(Departement::class, 'department_id');
     }
 }

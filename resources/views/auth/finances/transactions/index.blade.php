@@ -1,3 +1,8 @@
+@php
+    $user = auth()->user();
+    $departmentId = optional($user->employee)->department_id;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -49,15 +54,20 @@
                     <option value="entree" {{ request('type') == 'entree' ? 'selected' : '' }}>Entrées</option>
                     <option value="sortie" {{ request('type') == 'sortie' ? 'selected' : '' }}>Sorties</option>
                 </select>
-                <select name="departement_id" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+                @if(auth()->user()->profil === 'gerant')
+                <select name="departement_id"
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+
                     <option value="">Tous les départements</option>
+
                     @foreach($departements as $dep)
-                        <option value="{{ $dep->id }}"
-                            {{ request('departement_id') == $dep->id ? 'selected' : '' }}>
+                        <option value="{{ $dep->id }}">
                             {{ $dep->name }}
                         </option>
                     @endforeach
+
                 </select>
+                @endif
                 <button type="submit" class="px-3 py-2 bg-blue-600 text-white rounded-lg">Filtrer</button>
                 <a href="{{ route('transactions.index') }}" class="px-3 py-2 text-gray-500 border border-gray-200 rounded-lg">Réinitialiser</a>
             </form>
@@ -98,7 +108,9 @@
                     <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         <th class="px-6 py-4">Date</th>
                         <th class="px-6 py-4">Libellé</th>
-                        <th class="px-6 py-4">Département</th>
+                        @if(auth()->user()->profil === 'gerant')
+                            <th class="px-6 py-4">Département</th>
+                        @endif
                         <th class="px-6 py-4 text-right">Montant</th>
                         <th class="px-6 py-4 text-center">Actions</th>
                     </tr>
@@ -108,7 +120,11 @@
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</td>
                         <td class="px-6 py-4">{{ $transaction->label }}</td>
-                        <td class="px-6 py-4">{{ $transaction->departement->name }}</td>
+                        @if(auth()->user()->profil === 'gerant')
+                            <td class="px-6 py-4">
+                                {{ $transaction->departement->name }}
+                            </td>
+                        @endif
                         <td class="px-6 py-4 text-right font-semibold {{ $transaction->type == 'entree' ? 'text-emerald-600' : 'text-rose-600' }}">
                             {{ $transaction->type == 'entree' ? '+' : '-' }} {{ number_format($transaction->montant, 0, ',', ' ') }} FCFA
                         </td>
@@ -132,7 +148,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-12 text-gray-400">
+                        <td colspan="{{ auth()->user()->profil === 'gerant' ? 5 : 4 }}"class="text-center py-12 text-gray-400">
                             <iconify-icon icon="solar:wallet-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
                             <p>Aucune transaction enregistrée</p>
                             <p class="text-xs mt-1">Cliquez sur "Nouvelle entrée" ou "Nouvelle sortie" pour commencer</p>
@@ -172,13 +188,26 @@
                         placeholder="Ex: Vente de produits" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                    <select name="departement_id" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20" required>
-                        <option value="">-- Sélectionnez un département --</option>
-                        @foreach($departements as $dep)
-                            <option value="{{ $dep->id }}">{{ $dep->name }}</option>
-                        @endforeach
-                    </select>
+                    @if($user->profil === 'gerant')
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
+                        <select name="department_id"
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
+                            required>
+
+                            <option value="">-- Sélectionnez un département --</option>
+
+                            @foreach($departements as $dep)
+                                <option value="{{ $dep->id }}">
+                                    {{ $dep->name }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                    @else
+                        {{-- manager/employé --}}
+                        <input type="hidden" name="department_id" value="{{ $departmentId }}">{{ optional($user->employee->department)->name }}
+                    @endif
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Montant (FCFA)</label>

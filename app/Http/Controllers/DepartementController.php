@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departement;
+use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -12,7 +14,7 @@ class DepartementController extends Controller
     //Page pour afficher la liste de departements
     public function index()
     {
-        $departements = Departement::all();
+        $departements = Departement::with('manager')->get();
 
         return view('auth.departments.show', ['departements' => $departements]);
     }
@@ -20,19 +22,38 @@ class DepartementController extends Controller
     //Page pour ajouter un departement
     public function create()
     {
-        return view('auth.departments.create');
+        $users = User::where('profil', 'manager')
+        ->whereNotIn('id', Departement::whereNotNull('manager_id')->pluck('manager_id'))
+        ->get();
+
+        return view('auth.departments.create', compact('users'));
     }
 
     //Page pour editer un departement
     public function edit($id)
     {
-    
         $departement = Departement::find($id);
 
         if ($departement === null) {
             abort(404);
         }
-        return view('auth.departments.edit', ['departement' => $departement]);
+
+        $users = User::where('profil', 'manager')
+            ->where(function ($query) use ($departement) {
+
+                // managers non affectés
+                $query->whereNotIn('id',
+                    Departement::whereNotNull('manager_id')
+                        ->where('id', '!=', $departement->id)
+                        ->pluck('manager_id')
+                )
+
+                // ou le manager actuel du département
+                ->orWhere('id', $departement->manager_id);
+            })
+            ->get();
+
+        return view('auth.departments.edit', compact('departement', 'users'));
     }
 
     //Function pour ajouter un departement dans la base de donnee
@@ -49,13 +70,20 @@ class DepartementController extends Controller
             'status.in' => 'Statut doit etre actif ou inactif',
         ]);
 
+        
+
         if ($validator->fails()) {
             return redirect()->route('departements.create')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        Departement::create($request->all());
+        $department = Departement::create($request->all());
+        $manager = Employee::where('user_id', $request->manager_id)->first();
+
+        $manager->update([
+            'department_id' => $department->id
+        ]);
         return redirect()->route('departements.index')->with('success', 'Département ajouté avec succès');
     }
 
@@ -63,7 +91,7 @@ class DepartementController extends Controller
     public function update(Request $request, $id)
     {
 
-        $departement = Departement::find($id);
+        $department = Departement::find($id);
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:departements,name,' . $id,
@@ -81,8 +109,13 @@ class DepartementController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+        $manager = Employee::where('user_id', $request->manager_id)->first();
 
-        $departement->update($request->all());
+        $manager->update([
+            'department_id' => $department->id
+        ]);
+
+        $department->update($request->all());
         return redirect()->route('departements.index')->with('success', 'Département modifié avec succès');
     }
 

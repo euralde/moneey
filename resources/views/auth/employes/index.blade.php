@@ -85,7 +85,7 @@
         <!-- Liste du personnel -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-[1400px] text-left">
+                <table class="min-w-[1400px] text-left" style="text-align: center">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             <th class="px-6 py-4 min-w-[250px]">Employé</th>
@@ -106,7 +106,13 @@
                                     {{ $employee->user->lastname.' '.$employee->user->firstname }}
                                 </td>
                                 <td>{{ $employee->poste }}</td>
-                                <td>{{ $employee->departement->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($employee->user->profil === 'manager')
+                                        {{ optional($employee->user->managedDepartment)->name ?? 'Non affecté' }}
+                                    @else
+                                        {{ $employee->departement->name ?? 'Non affecté' }}
+                                    @endif
+                                </td>
                                 <td>{{ $employee->user->email }}</td>
                                 <td>{{ $employee->user->phone }}</td>
                                 <td>{{ $employee->hire_date }}</td>
@@ -114,9 +120,9 @@
                                 <td>{{ $employee->status }}</td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button type="button" 
-                                            onclick="openEditModal({{ $employee->id }})" 
-                                            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
+                                        <button type="button"
+                                        onclick='openEditModal(@json($employee))'
+                                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">
                                         <iconify-icon icon="solar:pen-2-linear" class="text-base"></iconify-icon>
                                         </button>
                                         <form action="{{ route('employes.destroy', $employee->id) }}" method="POST" class="inline-block" onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer cet employé ? Cette action est irréversible.')">
@@ -129,111 +135,6 @@
                                     </div>
                                 </td>
                             </tr>
-                            <!-- MODAL Modification Employé -->
-                            <div id="editEmployeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-                                <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div>
-                                <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
-                                    id="editModalContainer">
-                                    <div class="flex justify-between items-center p-5 border-b border-gray-100">
-                                        <h3 class="text-lg font-semibold text-gray-900">Modifier l'employé</h3>
-                                        <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
-                                            <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
-                                        </button>
-                                    </div>
-                                    
-                                    <form action="{{ route('employes.update', $employee->id) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="p-5 space-y-4">
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Prénom <span
-                                                            class="text-red-500">*</span></label>
-                                                    <input type="text" name="firstname" value="{{ $employee->user->firstname }}"
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
-                                                        placeholder="Prénom">
-                                                </div>
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nom <span
-                                                            class="text-red-500">*</span></label>
-                                                    <input type="text" name="lastname" value="{{ $employee->user->lastname }}"
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
-                                                        placeholder="Nom">
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
-                                                    <input type="text" name="poste" value="{{ $employee->poste }}"
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg"
-                                                        placeholder="Ex: Développeur Front-end">
-                                                </div>
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                                                    <select name="department_id" 
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                                                        <option value="">Choisir un département</option>
-                                                        @foreach($departements as $dep)
-                                                            <option value="{{ $dep->id }}"
-                                                                {{ $employee->department_id == $dep->id ? 'selected' : '' }}>
-                                                                {{ $dep->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                                    <input type="email" name="email" value="{{$employee->user->email}}"
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg"
-                                                        placeholder="prenom.nom@afroplume.com">
-                                                </div>
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                                                    <input type="tel" name="phone" value="{{ $employee->user->phone }}"
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg"
-                                                        placeholder="+229 XX XX XX XX XX">
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Profil</label>
-                                                    <select name="profil" class="w-full border rounded p-2">
-                                                        <option value="">Choisir un profil</option>
-                                                        <option value="gerant" {{ $employee->user->profil == 'gerant' ? 'selected' : '' }}>Gérant</option>
-                                                        <option value="manager" {{ $employee->user->profil == 'manager' ? 'selected' : '' }}>Manager</option>
-                                                        <option value="employee" {{ $employee->user->profil == 'employee' ? 'selected' : '' }}>Employé</option>
-                                                        <option value="ambassadeur" {{ $employee->user->profil == 'ambassadeur' ? 'selected' : '' }}>Ambassadeur</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                                                    <select name="status" 
-                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg">
-                                                        <option value="actif">🟢 Actif</option>
-                                                        <option value="conge">🟡 En congé</option>
-                                                        <option value="teletravail">🔵 Télétravail</option>
-                                                        <option value="inactif">⚫ Inactif</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Compétences / Notes</label>
-                                                <textarea name="skills" rows="2"
-                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"
-                                                    placeholder="React, Node.js, Gestion d'équipe...">{{$employee->skills}}</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
-                                            <button id="cancelEditModalBtn"
-                                                class="px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Annuler</button>
-                                            <button type="submit"
-                                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Mettre à jour</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -296,14 +197,23 @@
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
-                            <select name="department_id" id="department_id" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                        <div id="departmentWrapper">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Département
+                            </label>
+                            <select name="department_id" id="department_id"
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg">
                                 <option value="">Choisir un département</option>
                                 @foreach($departements as $dep)
-                                    <option value="{{ $dep->id }}" {{ old('department_id') == $dep->id ? 'selected' : '' }}>{{ $dep->name }}</option>
+                                    <option value="{{ $dep->id }}">
+                                        {{ $dep->name }}
+                                    </option>
                                 @endforeach
                             </select>
+                            <p id="departmentMessage"
+                                class="text-xs text-gray-500 mt-1 hidden">
+                                Les managers ne sont pas affectés à un département lors de leur création.
+                            </p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
@@ -366,7 +276,130 @@
         </div>
     </div>
 
-    
+    <!-- MODAL Modification Employé -->
+                            <div id="editEmployeeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+                                <div class="absolute inset-0 modal-backdrop" id="editModalBackdrop"></div>
+                                <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0"
+                                    id="editModalContainer">
+                                    <div class="flex justify-between items-center p-5 border-b border-gray-100">
+                                        <h3 class="text-lg font-semibold text-gray-900">Modifier l'employé</h3>
+                                        <button id="closeEditModalBtn" class="text-gray-400 hover:text-gray-600">
+                                            <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+                                        </button>
+                                    </div>                                    
+                                    <form id="editEmployeeForm" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="p-5 space-y-4">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                                                    <input type="text" name="firstname" id="edit_firstname"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('firstname','updateEmployee') border-red-500 @enderror" value="{{ old('firstname') }}">
+                                                        @error('firstname','updateEmployee')
+                                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                        @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                                                    <input type="text" name="lastname" id="edit_lastname"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('lastname','updateEmployee') border-red-500 @enderror" value="{{ old('lastname') }}">
+                                                        @error('lastname','updateEmployee')
+                                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                        @enderror
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Poste</label>
+                                                    <input type="text" name="poste" id="edit_poste"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Département</label>
+                                                    <select name="department_id" id="edit_department_id"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20">
+                                                        <option value="">Choisir un département</option>
+                                                        @foreach($departements as $dep)
+                                                            <option value="{{ $dep->id }}">
+                                                                {{ $dep->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <p id="editDepartmentMessage"
+                                                        class="text-xs text-gray-500 mt-1 hidden">
+                                                        Ce manager est automatiquement lié au département qu’il gère.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                                    <input type="email" name="email" id="edit_email"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('email','updateEmployee') border-red-500 @enderror" value="{{ old('email') }}">
+                                                        @error('email','updateEmployee')
+                                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                        @enderror
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                                    <input type="tel" name="phone" id="edit_phone"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 @error('phone','updateEmployee') border-red-500 @enderror" value="{{ old('phone') }}">
+                                                        @error('phone','updateEmployee')
+                                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                        @enderror
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Profil</label>
+                                                    <select name="profil" id="edit_profil"
+                                                        class="w-full border rounded p-2">
+                                                        <option value="gerant">Gérant</option>
+                                                        <option value="manager">Manager</option>
+                                                        <option value="employee">Employé</option>
+                                                        <option value="ambassadeur">Ambassadeur</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                                                    <select name="status" id="edit_status"
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20">
+                                                        <option value="actif">🟢 Actif</option>
+                                                        <option value="conge">🟡 En congé</option>
+                                                        <option value="teletravail">🔵 Télétravail</option>
+                                                        <option value="inactif">⚫ Inactif</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Date d'embauche</label>
+                                                <input type="date" name="hire_date" id="edit_hire_date" 
+                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('hire_date','updateEmployee') border-red-500 @enderror" 
+                                                value="{{ old('hire_date') }}">
+                                                @error('hire_date','updateEmployee')
+                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Compétences</label>
+                                                <textarea name="skills" id="edit_skills" rows="2"
+                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 resize-none"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end gap-3 p-5 border-t border-gray-100">
+                                            <button type="button" id="cancelEditModalBtn"
+                                                class="px-4 py-2 border rounded-lg">
+                                                Annuler
+                                            </button>
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                                                Mettre à jour
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
 
     @push('scripts')
         <script>
@@ -434,7 +467,6 @@
                     openModal();
                 });
             @endif
-
             // ========== MODAL DE MODIFICATION ==========
             const editModal = document.getElementById('editEmployeeModal');
             const editModalContainer = document.getElementById('editModalContainer');
@@ -442,19 +474,72 @@
             const cancelEditBtn = document.getElementById('cancelEditModalBtn');
             const editBackdrop = document.getElementById('editModalBackdrop');
 
-            function openEditModal(id) {
-                if (!editModal) return;
+            function openEditModal(employee) {
+
+                let form = document.getElementById('editEmployeeForm');
+
+                form.action = `/employes/update/${employee.id}`;
+
+                // USER
+                document.getElementById('edit_firstname').value = employee.user.firstname ?? '';
+                document.getElementById('edit_lastname').value = employee.user.lastname ?? '';
+                document.getElementById('edit_email').value = employee.user.email ?? '';
+                document.getElementById('edit_phone').value = employee.user.phone ?? '';
+                document.getElementById('edit_profil').value = employee.user.profil ?? '';
+
+                // EMPLOYEE
+                document.getElementById('edit_poste').value = employee.poste ?? '';
+                document.getElementById('edit_status').value = employee.status ?? '';
+                document.getElementById('edit_skills').value = employee.skills ?? '';
+                document.getElementById('edit_hire_date').value = employee.hire_date ?? '';
+
+                // département
+                const departmentSelect = document.getElementById('edit_department_id');
+                const departmentMessage = document.getElementById('editDepartmentMessage');
+
+                if (employee.user.profil === 'manager') {
+                    departmentSelect.value =
+                        employee.user.managed_department?.id ?? '';
+
+                    departmentSelect.disabled = true;
+
+                    // afficher message
+                    departmentMessage.classList.remove('hidden');
+                } else {
+                    departmentSelect.value =
+                        employee.department_id ?? '';
+
+                    departmentSelect.disabled = false;
+
+                    // cacher message
+                    departmentMessage.classList.add('hidden');
+                }
+
+                // ouvrir modal
                 editModal.classList.remove('hidden');
                 editModal.classList.add('flex');
-                if (editModalContainer) {
-                    editModalContainer.classList.remove('scale-95', 'opacity-0');
-                    editModalContainer.classList.add('scale-100', 'opacity-100');
-                }
-                
-                // Ici vous devrez charger les données de l'employé via AJAX
-                console.log('Edit employee with ID:', id);
-                // TODO: Charger les données de l'employé et remplir le formulaire
+
+                editModalContainer.classList.remove('scale-95', 'opacity-0');
+
+                editModalContainer.classList.add('scale-100', 'opacity-100');
             }
+
+            const editProfil = document.getElementById('edit_profil');
+            const editDepartmentSelect =
+                document.getElementById('edit_department_id');
+
+            const editDepartmentMessage =
+                document.getElementById('editDepartmentMessage');
+
+            editProfil.addEventListener('change', function () {
+                if (this.value === 'manager') {
+                    editDepartmentSelect.disabled = true;
+                    editDepartmentMessage.classList.remove('hidden');
+                } else {
+                    editDepartmentSelect.disabled = false;
+                    editDepartmentMessage.classList.add('hidden');
+                }
+            });
 
             function closeEditModal() {
                 if (!editModalContainer) return;
@@ -471,9 +556,58 @@
             if (closeEditBtn) closeEditBtn.addEventListener('click', closeEditModal);
             if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditModal);
             if (editBackdrop) editBackdrop.addEventListener('click', closeEditModal);
+
+            @if(session('edit_employee_id'))
+                document.addEventListener('DOMContentLoaded', function () {
+                    const employees = @json($employees);
+                    const employee = employees.find(
+                        emp => emp.id == {{ session('edit_employee_id') }}
+                    );
+                    if (employee) {
+                        openEditModal(employee);
+                    }
+                });
+            @endif
         </script>
 
-        
+        <script>
+            const profil = document.getElementById('profil');
+            const departmentWrapper = document.getElementById('departmentWrapper');
+            const departmentSelect = document.getElementById('department_id');
+            const departmentMessage = document.getElementById('departmentMessage');
+
+            function handleProfilChange() {
+
+                const currentProfil = profil.value;
+
+                if (currentProfil === 'manager') {
+
+                    // désactive le select
+                    departmentSelect.disabled = true;
+
+                    // retire la valeur
+                    departmentSelect.value = '';
+
+                    // style visuel
+                    departmentWrapper.classList.add('opacity-60');
+
+                    // message
+                    departmentMessage.classList.remove('hidden');
+
+                } else {
+
+                    departmentSelect.disabled = false;
+
+                    departmentWrapper.classList.remove('opacity-60');
+
+                    departmentMessage.classList.add('hidden');
+                }
+            }
+
+            profil.addEventListener('change', handleProfilChange);
+
+            handleProfilChange();
+        </script>
 
         <style>
             .modal-backdrop {
