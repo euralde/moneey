@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departement;
 use App\Models\Transaction;
 use App\Models\Task;
 use Illuminate\Support\Facades\DB;
@@ -13,54 +14,56 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         // =========================
-        // 🔵 GÉRANT (users uniquement)
+        // VARIABLES
+        // =========================
+        $departmentId = null;
+        $departementsData = [];
+
+        // =========================
+        // GÉRANT
         // =========================
         if ($user->profil === 'gerant') {
 
-            $totalEntrees = Transaction::where('type', 'entree')->sum('montant');
-            $totalSorties = Transaction::where('type', 'sortie')->sum('montant');
+            $totalEntrees = Transaction::where('type', 'entree')
+                ->sum('montant');
 
-            $tachesUrgentes = Task::where('status', 'a-faire')
-                ->where('priority', 'urgent')
-                ->count();
+            $totalSorties = Transaction::where('type', 'sortie')
+                ->sum('montant');
 
-            $transactions = Transaction::select(
-                    DB::raw("DATE(CONVERT_TZ(created_at, '+00:00', '+01:00')) as jour"),
-                    'type',
-                    DB::raw('SUM(montant) as total')
-                )
-                ->groupBy('jour', 'type')
-                ->orderBy('jour')
-                ->get();
+            // =========================
+            // GRAPHE PAR DÉPARTEMENT
+            // =========================
+            $departements = Departement::all();
 
-            $jours = $transactions
-                ->pluck('jour')
-                ->unique()
-                ->values();
+            foreach ($departements as $departement) {
 
-            $entreesParJour = [];
-            $sortiesParJour = [];
-
-            foreach ($jours as $jour) {
-
-                $entree = $transactions
-                    ->where('jour', $jour)
+                $entrees = Transaction::where(
+                        'department_id',
+                        $departement->id
+                    )
                     ->where('type', 'entree')
-                    ->first();
+                    ->sum('montant');
 
-                $sortie = $transactions
-                    ->where('jour', $jour)
+                $sorties = Transaction::where(
+                        'department_id',
+                        $departement->id
+                    )
                     ->where('type', 'sortie')
-                    ->first();
+                    ->sum('montant');
 
-                $entreesParJour[] = $entree ? $entree->total : 0;
+                $departementsData[] = [
 
-                $sortiesParJour[] = $sortie ? $sortie->total : 0;
+                    'name' => $departement->name,
+
+                    'entrees' => $entrees,
+
+                    'sorties' => $sorties
+                ];
             }
         }
 
         // =========================
-        // 🟢 EMPLOYÉ / MANAGER
+        // EMPLOYÉ / MANAGER
         // =========================
         else {
 
@@ -79,57 +82,97 @@ class DashboardController extends Controller
             $totalSorties = Transaction::where('type', 'sortie')
                 ->where('department_id', $departmentId)
                 ->sum('montant');
-
-            $tachesUrgentes = Task::where('status', 'a-faire')
-                ->where('priority', 'urgente')
-                ->count();
-
-            $transactions = Transaction::select(
-                    DB::raw("DATE(CONVERT_TZ(created_at, '+00:00', '+01:00')) as jour"),
-                    'type',
-                    DB::raw('SUM(montant) as total')
-                )
-                ->where('department_id', $departmentId)
-                ->groupBy('jour', 'type')
-                ->orderBy('jour')
-                ->get();
-
-            $jours = $transactions
-                ->pluck('jour')
-                ->unique()
-                ->values();
-
-            $entreesParJour = [];
-            $sortiesParJour = [];
-
-            foreach ($jours as $jour) {
-
-                $entree = $transactions
-                    ->where('jour', $jour)
-                    ->where('type', 'entree')
-                    ->first();
-
-                $sortie = $transactions
-                    ->where('jour', $jour)
-                    ->where('type', 'sortie')
-                    ->first();
-
-                $entreesParJour[] = $entree ? $entree->total : 0;
-
-                $sortiesParJour[] = $sortie ? $sortie->total : 0;
-            }
         }
 
-        $tresorerie = $totalEntrees - $totalSorties;
+        // =========================
+        // TÂCHES
+        // =========================
+        $tachesUrgentes = Task::where('status', 'a-faire')
+            ->whereIn('priority', ['urgent', 'urgente'])
+            ->count();
 
+        // =========================
+        // TRANSACTIONS
+        // =========================
+        $transactionsQuery = Transaction::select(
+                DB::raw("
+                    DATE(
+                        CONVERT_TZ(
+                            created_at,
+                            '+00:00',
+                            '+01:00'
+                        )
+                    ) as jour
+                "),
+                'type',
+                DB::raw('SUM(montant) as total')
+            );
+
+        // FILTRE SI EMPLOYÉ
+        if ($departmentId) {
+
+            $transactionsQuery->where(
+                'department_id',
+                $departmentId
+            );
+        }
+
+        $transactions = $transactionsQuery
+            ->groupBy('jour', 'type')
+            ->orderBy('jour')
+            ->get();
+
+        // =========================
+        // FORMATAGE DATA
+        // =========================
+        $jours = $transactions
+            ->pluck('jour')
+            ->unique()
+            ->values();
+
+        $entreesParJour = [];
+        $sortiesParJour = [];
+
+        foreach ($jours as $jour) {
+
+            $entree = $transactions
+                ->where('jour', $jour)
+                ->where('type', 'entree')
+                ->first();
+
+            $sortie = $transactions
+                ->where('jour', $jour)
+                ->where('type', 'sortie')
+                ->first();
+
+            $entreesParJour[] =
+                $entree ? $entree->total : 0;
+
+            $sortiesParJour[] =
+                $sortie ? $sortie->total : 0;
+        }
+
+        // =========================
+        // TRÉSORERIE
+        // =========================
+        $tresorerie =
+            $totalEntrees - $totalSorties;
+
+        // =========================
+        // VIEW
+        // =========================
         return view('auth.dashboard', compact(
+
             'totalEntrees',
             'totalSorties',
             'tresorerie',
             'tachesUrgentes',
+
             'entreesParJour',
             'sortiesParJour',
-            'jours'
+            'jours',
+
+            'departementsData'
         ));
     }
 }

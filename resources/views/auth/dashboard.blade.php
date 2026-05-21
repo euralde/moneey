@@ -151,6 +151,47 @@
 
     </div>
 
+    @if(auth()->user()->profil === 'gerant')
+
+    <div class="bg-white rounded-xl border p-5">
+
+        <div class="mb-5">
+
+            <h3 class="font-semibold text-lg">
+                Analyse par département
+            </h3>
+
+            <p class="text-sm text-gray-400">
+                Comparaison des entrées et sorties
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            @foreach($departementsData as $index => $departement)
+
+                <div class="border rounded-xl p-4">
+
+                    <h4 class="font-semibold mb-4">
+
+                        {{ $departement['name'] }}
+
+                    </h4>
+
+                    <canvas
+                        id="departmentChart{{ $index }}"
+                        height="180">
+                    </canvas>
+
+                </div>
+
+            @endforeach
+
+        </div>
+    </div>
+
+    @endif
+
     <!-- ===================== RECOMMANDATION ===================== -->
     <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
         <div class="flex">
@@ -172,63 +213,205 @@
 {{-- ===================== SCRIPTS CHART ===================== --}}
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const jours = @json($jours);
-        const entrees = @json($entreesParJour);
-        const sorties = @json($sortiesParJour);
-        const labels = jours.map(jour => {
-            return new Date(jour).toLocaleDateString('fr-FR', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            });
-        });
 
-        new window.Chart(document.getElementById('cashflowChart'), {
+document.addEventListener('DOMContentLoaded', function () {
+
+    // =========================
+    // DATA PRINCIPALE
+    // =========================
+    const jours = @json($jours);
+
+    const entrees = @json($entreesParJour);
+
+    const sorties = @json($sortiesParJour);
+
+    // =========================
+    // FORMAT DATE
+    // =========================
+    const labels = jours.map(jour => {
+
+        return new Date(jour).toLocaleDateString('fr-FR', {
+
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    });
+
+    // =========================
+    // CASHFLOW CHART
+    // =========================
+    new window.Chart(
+
+        document.getElementById('cashflowChart'),
+
+        {
             type: 'bar',
+
             data: {
+
                 labels: labels,
+
                 datasets: [
+
                     {
                         label: 'Entrées',
+
                         data: entrees,
+
                         backgroundColor: '#10b981',
+
                         borderRadius: 6
                     },
+
                     {
                         label: 'Sorties',
+
                         data: sorties,
+
                         backgroundColor: '#fb7185',
+
                         borderRadius: 6
                     }
                 ]
             },
+
             options: {
+
                 responsive: true,
+
                 plugins: {
+
                     legend: {
                         position: 'top'
                     }
                 },
+
                 scales: {
+
                     y: {
                         beginAtZero: true
                     }
                 }
             }
-        });
+        }
+    );
 
-        new window.Chart(document.getElementById('expenseDonutChart'), {
+    // =========================
+    // DONUT CHART
+    // =========================
+    new window.Chart(
+
+        document.getElementById('expenseDonutChart'),
+
+        {
             type: 'doughnut',
+
             data: {
-                labels: ['Entrées', 'Sorties'],
+
+                labels: [
+                    'Entrées',
+                    'Sorties'
+                ],
+
                 datasets: [{
-                    data: [{{ $totalEntrees }}, {{ $totalSorties }}],
-                    backgroundColor: ['#10b981', '#fb7185']
+
+                    data: [
+                        {{ $totalEntrees }},
+                        {{ $totalSorties }}
+                    ],
+
+                    backgroundColor: [
+                        '#10b981',
+                        '#fb7185'
+                    ]
                 }]
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
             }
+        }
+    );
+
+    // =========================
+    // GRAPHES DÉPARTEMENTS
+    // =========================
+    @if(auth()->user()->profil === 'gerant')
+
+        const departements =
+            @json($departementsData);
+
+        departements.forEach((departement, index) => {
+
+            const canvas =
+                document.getElementById(
+                    `departmentChart${index}`
+                );
+
+            if (!canvas) return;
+
+            new window.Chart(canvas, {
+
+                type: 'bar',
+
+                data: {
+
+                    labels: [
+                        'Entrées',
+                        'Sorties'
+                    ],
+
+                    datasets: [{
+
+                        label: departement.name,
+
+                        data: [
+                            departement.entrees,
+                            departement.sorties
+                        ],
+
+                        backgroundColor: [
+                            '#10b981',
+                            '#fb7185'
+                        ],
+
+                        borderRadius: 8
+                    }]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        }
+                    },
+
+                    scales: {
+
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         });
 
-    });
+    @endif
+
+});
+
 </script>
 @endpush
