@@ -63,6 +63,7 @@ class DepartementController extends Controller
             'name' => 'required|unique:departements|max:255',
             'description' => 'nullable',
             'status' => 'required|in:actif,inactif',
+            'manager_id' => 'nullable|exists:users,id',
         ], [
             'name.required' => 'Nom est requis',
             'name.unique' => 'Nom doit etre unique',
@@ -79,11 +80,16 @@ class DepartementController extends Controller
         }
 
         $department = Departement::create($request->all());
-        $manager = Employee::where('user_id', $request->manager_id)->first();
 
-        $manager->update([
-            'department_id' => $department->id
-        ]);
+        if ($request->manager_id) {
+            $manager = Employee::where('user_id', $request->manager_id)->first();
+
+            if ($manager) {
+                $manager->update([
+                    'department_id' => $department->id
+                ]);
+            }
+        }
         return redirect()->route('departements.index')->with('success', 'Département ajouté avec succès');
     }
 
@@ -97,6 +103,7 @@ class DepartementController extends Controller
             'name' => 'required|unique:departements,name,' . $id,
             'description' => 'nullable',
             'status' => 'required|in:actif,inactif',
+            'manager_id' => 'nullable|exists:users,id',
         ], [
             'name.required' => 'Nom est requis',
             'name.unique' => 'Nom doit etre unique',
@@ -109,13 +116,17 @@ class DepartementController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        $manager = Employee::where('user_id', $request->manager_id)->first();
-
-        $manager->update([
-            'department_id' => $department->id
-        ]);
-
         $department->update($request->all());
+
+        if ($request->manager_id) {
+            $manager = Employee::where('user_id', $request->manager_id)->first();
+
+            if ($manager) {
+                $manager->update([
+                    'department_id' => $department->id
+                ]);
+            }
+        }
         return redirect()->route('departements.index')->with('success', 'Département modifié avec succès');
     }
 

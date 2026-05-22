@@ -37,10 +37,19 @@
             <span>Notes</span>
         </a>
         
-        @if(in_array($profil, ['gerant', 'manager']))
+        @if(
+            $profil === 'gerant' ||
+            (
+                $profil === 'manager' &&
+                auth()->user()->employee &&
+                auth()->user()->employee->department_id
+            )
+        )
         <a href="{{ route('transactions.index') }}"
             class="flex items-center px-6 py-2.5 {{ request()->routeIs('transactions.index') ? 'text-white bg-slate-800 border-l-4 border-blue-500' : 'hover:bg-slate-800 hover:text-white text-slate-300' }}">
+            
             <iconify-icon icon="solar:wallet-money-linear" class="text-lg mr-3"></iconify-icon>
+            
             <span>Finances</span>
         </a>
         @endif
