@@ -269,18 +269,22 @@
                         </select>
                     </div>
                 </div>
+                @if(auth()->user()->profil !== 'employe')
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Assigné à</label>
-                    <select name="assigned_to" class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('assigned_to') border-red-500 @enderror" value="{{ old('assigned_to') }}">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Assigné à
+                    </label>
+                    <select name="assigned_to"
+                        class="w-full px-3 py-2 border border-gray-200 rounded-lg">
                         <option value="">Choisir un employé</option>
                         @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->lastname.' '.$user->firstname }}</option>
+                            <option value="{{ $user->id }}">
+                                {{ $user->lastname.' '.$user->firstname }}
+                            </option>
                         @endforeach
                     </select>
-                    @error('assigned_to')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
                 </div>
+                @endif
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Notes / Commentaires</label>
                     <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none"

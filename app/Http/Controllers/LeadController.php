@@ -14,63 +14,70 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Lead::with('assignedTo');
+        $user = auth()->user();
 
-        // 🔎 Recherche
+        $query = Lead::with(['assignedTo.employee']);
+
+        // =========================
+        // RÔLES
+        // =========================
+
+        if ($user->profil === 'gerant') {
+            // voit tout
+        }
+
+        elseif ($user->profil === 'manager') {
+
+            $departementId = $user->employee?->department_id;
+
+            $query->whereHas('assignedTo.employee', function ($q) use ($departementId) {
+                $q->where('department_id', $departementId);
+            });
+        }
+
+        else { // employé
+
+            $query->where('assigned_to', $user->id);
+        }
+
+        // =========================
+        // FILTRES
+        // =========================
+
         if ($request->filled('search')) {
-
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-
                 $q->where('name', 'like', "%$search%")
                 ->orWhere('email', 'like', "%$search%")
                 ->orWhere('company', 'like', "%$search%");
             });
         }
 
-        // 📌 Filtre status
         if ($request->filled('status')) {
-
             $query->where('status', $request->status);
         }
 
-        // 🌐 Filtre source
         if ($request->filled('source')) {
-
             $query->where('source', $request->source);
         }
 
-        // résultats filtrés
         $leads = $query->latest()->get();
 
-        // 📊 statistiques filtrées
+        // =========================
+        // STATS
+        // =========================
+
         $totallead = $leads->count();
 
-        $totalnouveau = $leads
-            ->where('status', 'nouveau')
-            ->count();
+        $totalnouveau = $leads->where('status', 'nouveau')->count();
+        $totalcontacte = $leads->where('status', 'contacte')->count();
+        $totalrdv = $leads->where('status', 'rdv')->count();
+        $totalnegocation = $leads->where('status', 'negociation')->count();
+        $totalgagne = $leads->where('status', 'gagne')->count();
+        $totalperdu = $leads->where('status', 'perdu')->count();
 
-        $totalcontacte = $leads
-            ->where('status', 'contacte')
-            ->count();
-
-        $totalrdv = $leads
-            ->where('status', 'rdv')
-            ->count();
-
-        $totalnegocation = $leads
-            ->where('status', 'negociation')
-            ->count();
-
-        $totalgagne = $leads
-            ->where('status', 'gagne')
-            ->count();
-
-        $totalperdu = $leads
-            ->where('status', 'perdu')
-            ->count();
-
+        // employés visibles
         $users = User::all();
 
         return view('auth.leads.index', compact(
@@ -104,16 +111,8 @@ class LeadController extends Controller
             'phone' => 'required',
             'source' => 'required',
             'status' => 'required',
-            'assigned_to' => 'required',
+            'assigned_to' => 'nullable',
             'notes' => 'nullable',
-        ], [
-            'name.required' => 'Nom est requis',
-            'name.unique' => 'Nom doit etre unique',
-            'email.required' => 'Email requis',
-            'phone.required' => 'Numéro de téléphone requis',
-            'assigned_to.required' => 'Utilisateur assigné requis',
-            'source.required' => 'Source requise',
-            'status.required' => 'requis',
         ]);
 
         if ($validator->fails()) {
@@ -122,6 +121,8 @@ class LeadController extends Controller
                 ->withInput();
         }
 
+        $user = auth()->user();
+
         Lead::create([
             'name' => $request->name,
             'company' => $request->company,
@@ -129,12 +130,16 @@ class LeadController extends Controller
             'phone' => $request->phone,
             'source' => $request->source,
             'status' => $request->status,
-            'assigned_to' => $request->assigned_to,
+
+            // 👇 logique importante
+            'assigned_to' => $user->profil === 'employe'
+                ? $user->id
+                : $request->assigned_to,
+
             'notes' => $request->notes,
         ]);
 
-        return redirect()
-            ->route('lead.index')
+        return redirect()->route('lead.index')
             ->with('success', 'Lead ajouté avec succès');
     }
     /**
@@ -164,16 +169,8 @@ class LeadController extends Controller
             'phone' => 'required',
             'source' => 'required',
             'status' => 'required',
-            'assigned_to' => 'required',
+            'assigned_to' => 'nullable',
             'notes' => 'nullable',
-        ], [
-            'name.required' => 'Nom est requis',
-            'name.unique' => 'Nom doit etre unique',
-            'email.required' => 'Email requis',
-            'phone.required' => 'Numéro de téléphone requis',
-            'assigned_to.required' => 'Utilisateur assigné requis',
-            'source.required' => 'Source requise',
-            'status.required' => 'requis',
         ]);
 
         if ($validator->fails()) {
@@ -182,22 +179,28 @@ class LeadController extends Controller
                 ->withInput()
                 ->with('edit_lead_id', $id);
         }
-        
-            $lead = Lead::findorfail($id);
-            
-                // Mettre à jour l'utilisateur
-                $lead->update([
-                    'name' => $request->name,
-                    'company' => $request->company,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                    'source' => $request->source,
-                    'status' => $request->status,
-                    'assigned_to' => $request->assigned_to,
-                    'notes' => $request->notes,
-                ]);
 
-                return redirect()->route('lead.index')->with('success', 'Employé modifié avec succès');
+        $lead = Lead::findOrFail($id);
+        $user = auth()->user();
+
+        $lead->update([
+            'name' => $request->name,
+            'company' => $request->company,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'source' => $request->source,
+            'status' => $request->status,
+
+            // 👇 sécurité rôle
+            'assigned_to' => $user->profil === 'employe'
+                ? $user->id
+                : $request->assigned_to,
+
+            'notes' => $request->notes,
+        ]);
+
+        return redirect()->route('lead.index')
+            ->with('success', 'Lead modifié avec succès');
     }
 
     /**
