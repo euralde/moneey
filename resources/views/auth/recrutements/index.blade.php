@@ -165,7 +165,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td class="text-center py-12 text-gray-400">
+                                <td colspan="7" class="text-center py-12 text-gray-400">
                                     <iconify-icon icon="solar:users-group-rounded-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
                                     <p>Aucun recrutement enregistré</p>
                                     <p class="text-xs mt-1">Cliquez sur "Nouveau recrutement" pour commencer</p>
