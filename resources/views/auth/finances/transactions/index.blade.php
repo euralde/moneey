@@ -148,7 +148,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ auth()->user()->profil === 'gerant' ? 5 : 4 }}"class="text-center py-12 text-gray-400">
+                        <td colspan="{{ auth()->user()->profil === 'gerant' ? 5 : 4 }}" class="text-center py-12 text-gray-400">
                             <iconify-icon icon="solar:wallet-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
                             <p>Aucune transaction enregistrée</p>
                             <p class="text-xs mt-1">Cliquez sur "Nouvelle entrée" ou "Nouvelle sortie" pour commencer</p>
@@ -193,17 +193,13 @@
                         <select name="department_id"
                             class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20"
                             required>
-
                             <option value="">-- Sélectionnez un département --</option>
-
                             @foreach($departements as $dep)
                                 <option value="{{ $dep->id }}">
                                     {{ $dep->name }}
                                 </option>
                             @endforeach
-
                         </select>
-
                     @else
                         {{-- manager/employé --}}
                         <input type="hidden" name="department_id" value="{{ $departmentId }}">{{ optional($user->employee->department)->name }}

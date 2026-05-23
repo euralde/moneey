@@ -100,7 +100,7 @@
                         </tr>
                     </thead>
                     <tbody style="text-align: center">
-                        @foreach ($employees as $employee)
+                        @forelse ($employees as $employee)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ $employee->user->lastname.' '.$employee->user->firstname }}
@@ -135,7 +135,15 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                            @empty
+                            <tr>
+                                <td class="text-center py-12 text-gray-400">
+                                    <iconify-icon icon="solar:users-group-two-rounded-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
+                                    <p>Aucun employé enregistré</p>
+                                    <p class="text-xs mt-1">Cliquez sur "Ajouter un employé" pour commencer</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

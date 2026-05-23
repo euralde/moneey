@@ -36,7 +36,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm">
-                        @foreach($departements as $departement)
+                        @forelse($departements as $departement)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 font-medium text-gray-900">{{ $departement->name }}</td>
                                 <td class="px-6 py-4 text-gray-500 max-w-xs truncate">{{ $departement->description }}</td>
@@ -68,8 +68,15 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
-
+                            @empty
+                            <tr>
+                                <td class="text-center py-12 text-gray-400">
+                                    <iconify-icon icon="solar:buildings-2-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
+                                    <p>Aucun département enregistré</p>
+                                    <p class="text-xs mt-1">Cliquez sur "Ajouter un département" pour commencer</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

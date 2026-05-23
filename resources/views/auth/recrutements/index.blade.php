@@ -130,7 +130,7 @@
                         </tr>
                     </thead>
                     <tbody style="text-align: center">
-                        @foreach ($recrutements as $recrutement)
+                        @forelse ($recrutements as $recrutement)
                             <tr>
                                 <td>{{ $recrutement->title }}</td>
                                 @if(auth()->user()->profil === 'gerant')
@@ -163,7 +163,15 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                            @empty
+                            <tr>
+                                <td class="text-center py-12 text-gray-400">
+                                    <iconify-icon icon="solar:users-group-rounded-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
+                                    <p>Aucun recrutement enregistré</p>
+                                    <p class="text-xs mt-1">Cliquez sur "Nouveau recrutement" pour commencer</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

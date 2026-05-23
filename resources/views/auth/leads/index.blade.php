@@ -172,7 +172,7 @@
                         </tr>
                     </thead>
                     <tbody style="text-align: center">
-                        @foreach($leads as $lead)
+                        @forelse($leads as $lead)
                         <tr>
                             <td>{{ $lead->name }}</td>
                             <td>{{ $lead->phone }}</td>
@@ -197,7 +197,15 @@
                                     </div>
                                 </td>
                         </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td class="text-center py-12 text-gray-400">
+                                    <iconify-icon icon="solar:chart-square-linear" class="text-5xl mx-auto mb-3"></iconify-icon>
+                                    <p>Aucun lead enregistré</p>
+                                    <p class="text-xs mt-1">Cliquez sur "Nouveau lead" pour commencer</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
