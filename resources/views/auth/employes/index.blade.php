@@ -210,7 +210,8 @@
                                 Département
                             </label>
                             <select name="department_id" id="department_id"
-                                class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg @error('department_id') border-red-500 @enderror" 
+                                value="{{ old('department_id') }}">
                                 <option value="">Choisir un département</option>
                                 @foreach($departements as $dep)
                                     <option value="{{ $dep->id }}">
@@ -218,6 +219,9 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('department_id')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                             <p id="departmentMessage"
                                 class="text-xs text-gray-500 mt-1 hidden">
                                 Les managers ne sont pas affectés à un département lors de leur création.
